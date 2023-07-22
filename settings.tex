@@ -8,7 +8,7 @@
 \usepackage[%
   backend=biber,
   url=false,
-  style=alphabetic,
+  style=numeric,
   maxnames=4,
   minnames=3,
   maxbibnames=99,
@@ -27,23 +27,23 @@
 \usepackage[printonlyused]{acronym}
 \usepackage[hidelinks]{hyperref} % hidelinks removes colored boxes around references and links
 \AtBeginDocument{%
-	\hypersetup{
-		pdftitle=\getTitle,
-		pdfauthor=\getAuthor,
-	}
+  \hypersetup{
+    pdftitle=\getTitle,
+    pdfauthor=\getAuthor,
+  }
 }
 \usepackage{ifthen}
 
 \addto\extrasamerican{
-	\def\lstnumberautorefname{Line}
-	\def\chapterautorefname{Chapter}
-	\def\sectionautorefname{Section}
-	\def\subsectionautorefname{Subsection}
-	\def\subsubsectionautorefname{Subsubsection}
+  \def\lstnumberautorefname{Line}
+  \def\chapterautorefname{Chapter}
+  \def\sectionautorefname{Section}
+  \def\subsectionautorefname{Subsection}
+  \def\subsubsectionautorefname{Subsubsection}
 }
 
 \addto\extrasngerman{
-	\def\lstnumberautorefname{Zeile}
+  \def\lstnumberautorefname{Zeile}
 }
 
 % Themes
