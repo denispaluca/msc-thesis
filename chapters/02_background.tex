@@ -18,12 +18,26 @@ Allowing anyone to deploy and run arbitrary code on the network has led to the c
 
 
 \section{Smart Contract Security}
+As we already laid out the importance of smart contract security, we will now explore the different types of vulnerabilities that can be found in smart contracts. Keeping smart contracts secure is compromised of two parts: writing vulnerability free smart contract code and also insuring that the administrating account of the smart contract is managed safely off-chain. We will be focusing on the first part.
 
+Smart contracts have a lot of idiosyncrasies that set them apart from usual computer programs. Therefore, the types of vulnerabilities that we face when developing smart contracts are usually specific to the world of blockchain and more precisely they differ from one blockchain network to the other. The following list is a non-exhaustive list of vulnerabilities that can be found in smart contracts:
+\begin{itemize}
+    \item \textbf{Reentrancy} - Although this vulnerability is specific to the Ethereum network, it is worth mentioning since it is one of the most iconic blockchain vulnerabilities. It is caused by the fact that the execution of a function is not atomic. This means that the execution of a function can be interrupted by another function call. This can lead to a vulnerability where a malicious user can call the same function multiple times before the first execution is finished. In this manner, the malicious user could be able to drain the funds of the contract.
+    \item \textbf{Integer Overflow and Underflow} - This vulnerability is not specific to smart contracts, but it is more prevalent in smart contracts due to the fact that most networks use fixed-size integers. This means that the maximum value of an integer is usually 2\textsuperscript{256}-1. If the result of an operation on integers is larger than the maximum value, the result will overflow and the integer will wrap around to 0. This can lead to a vulnerability where a malicious user can overflow the balance of the contract and drain all the funds.
+    \item \textbf{Timestamp Dependence} - This vulnerability is also not specific to smart contracts, but it is more prevalent in smart contracts due to the fact that the most networks has a timestamp variable. This variable can be manipulated by the miner that mines the block that contains the transaction. This can lead to a vulnerability where a malicious user can call a function at a specific time to exploit the contract.
+    \item \textbf{Front-running} - This vulnerability is specific to smart contracts. It is caused by the fact that the order of transactions is not deterministic. This means that a malicious user can submit a transaction that is executed before another transaction that was submitted earlier. This can lead to a vulnerability where a malicious user can exploit a contract by submitting a transaction that is executed before a transaction that was meant to prevent the exploit. After Ethereum transitioned to proof-of-state, the vulnerability still persists since the block proposer can choose which transactions to include and their order in the block.
+    \item \textbf{Resource Limit Vulnerabilities} - As already mentioned above the execution of a function in most blockchain will incur a cost on the caller. This cost is calculated based on the amount of computational resources that the function consumes. This means that the more complex the function is, the more expensive it is to execute. If the function is too complex, the costs of executing it might exceed certain limitations of the network or the funds of the contract. This can lead to certain functions of the contract being unusable after a while. An example of this would be calling a function that pays out funds to users from a large array. If the users in the array are too many, the function might not be able to pay out all the users due to the cost of the function exceeding the funds of the contract.
+    \item \textbf{Simple Logical Errors} - Although most smart contract are thoroughly scrutinized by the community, still a significant number of vulnerabilities are caused by simple logical errors. These errors cannot be simply avoided by adding features to your blockchain, as they are inherent in all computer programs written by humans.
+\end{itemize}
+
+To deal with these vulnerabilities different tools have been proposed such as static analysis tools, symbolic execution tools and fuzzers, while we will discuss more of on section \ref{section:fuzzing}.
+
+In the next section we will explore the Algorand blockchain network, its smart contracts, how it handles the previously mentioned vulnerabilities and which vulnerabilities are specific to it.
 
 \section{Algorand}
 
 \subsection*{Algorand Smart Contracts}
 
-\section{Fuzzing}
+\section{Fuzzing} \label{section:fuzzing}
 
 \section{Related Work}
