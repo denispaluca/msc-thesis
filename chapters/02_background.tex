@@ -54,6 +54,7 @@ An application can store state in three different ways:
     \item \textbf{Local Storage} - Similarly to global storage, it is also determined on creation and cannot be change. The maximum amount of key-value pairs is 16. The difference is that local storage is stored on the account that called the application. The local storage of an account is allocated after an account submits an \textit{opt-in} application call (see below). The user can also remove the local storage from his account by submitting a \textit{clear state} application call.
     \item \textbf{Box Storage} - Box storage is similar to global storage, the only meaningful difference being box storage can be dynamically allocated. The box id is required when making an application call for the box storage to be allocated or to be read.
 \end{itemize}
+Since the state is stored on the blockchain, it is publicly available to anyone. This means it can be read by clients but also by other applications. This allows for the creation of more complex applications that interact with each other.
 
 Smart contracts are implemented with two independent programs: the \textit{Approval Program} and the \textit{Clear State Program}. When making an application call transaction, one can choose form the following transaction types:
 \begin{itemize}
@@ -64,6 +65,24 @@ Smart contracts are implemented with two independent programs: the \textit{Appro
     \item \textbf{CloseOut} - Account can end their participation on the contract and clear the local storage. This call can fail and the account can remain opted-in.
     \item \textbf{ClearState} - Similar to CloseOut, but the account will be opted-out regardless if the call succeeds or fails. In other words, the local state of the account associated with this application will be forcefully cleared.
 \end{itemize}
+
+Contracts often require data stored within the ledger. To maintain a high level of performance, the AVM restricts how much of the ledger can be accessed by an application during execution. This is implemented by having references passed to an application call transaction, which denote the on-chain data the application could access. These references are passed as reference arrays to the call and they may contain the following types of references: Accounts, Assets (ASA), Applications and Boxes.
+
+When a smart contract developer want to expose functions (or methods) he can use the ABI (Application Binary Interface) specification defined in ARC4. This way clients can easily interact with the application. Adhering to the ABI specification is not mandatory and many contracts are written without it. Method parameters can have the following types:
+\begin{description}
+    \item[uintN] An N-bit unsigned integer, where 8 <= N <= 512 and N \% 8 = 0
+    \item[byte]	An alias for uint8
+    \item[bool]	A boolean value that is restricted to either 0 or 1. When encoded, up to 8 consecutive bool values will be packed into a single byte
+    \item[ufixedNxM] An N-bit unsigned fixed-point decimal number with precision M, where 8 <= N <= 512, N \% 8 = 0, and 0 < M <= 160, which denotes a value v as v / (10\^M)
+
+        \item[{type[N]}] A fixed-length array of length N, where N >= 0. type can be any other type
+    \item[address] Used to represent a 32-byte Algorand address. This is equivalent to byte[32]
+
+        \item[{type[]}] A variable-length array. type can be any other type
+    \item[string] A variable-length byte array (byte[]) assumed to contain UTF-8 encoded content
+        (T1,T2,...,TN) A tuple of the types T1, T2, …, TN, N >= 0
+    \item[reference] A uint8 parameter that points to an account, asset or application in the references array.
+\end{description}
 
 \section{Fuzzing} \label{section:fuzzing}
 
