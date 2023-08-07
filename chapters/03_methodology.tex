@@ -44,8 +44,38 @@ Therefore, we decided to leave this feature out of the initial implementation an
 Similarly to the opt-in calls, all other special calls are not executed by our tool.
 The fuzzer only executes noop applications calls.
 
+AlgoFuzz is implemented in Python and it uses the Python SDK for Algorand to interact with the Algorand network.
+Working with the fuzzer requires the user to have a local Algorand network running in sandbox mode.
+This can be extended in the future to make it possible fuzzing applications on the Algorand TestNet.
+
 
 \section{Mutators} \label{section:mutators}
+In this section we will go through the mutators and the heuristics that we implemented for our fuzzer.
+A mutator has two important methods:
+\begin{itemize}
+    \item \texttt{mutate}: This method takes an input and mutates it.
+          Internally, a mutator may have multiple mutation strategies that it uses to mutate the input.
+    \item \texttt{seed}: This method seeds the input with a value.
+          Currently, we have chosen simple initial values for all different types.
+\end{itemize}
+
+\subsection*{Boolean Mutator}
+This mutator generates random boolean values. The values are all seeded with \texttt{False}.
+The mutation strategy is simply to flip the value of the boolean.
+
+\subsection*{Uint, Ufixed and Byte Mutators}
+
+
+\subsection*{String, Array Dynamic and Array Static Mutators}
+
+\subsection*{Tuple Mutator}
+
+\subsection*{Account Mutator}
+
+\subsection*{Payment Mutator}
+
+\subsection*{Method Mutator}
+
 
 \section{Scheduler}
 
