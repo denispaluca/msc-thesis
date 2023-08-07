@@ -82,6 +82,18 @@ Ufixed and Byte mutators are special cases of the Uint mutator. The Ufixed mutat
 The Byte mutator is an alias for the Uint mutator with a size of 8 bits.
 
 \subsection*{String, Array Dynamic and Array Static Mutators}
+The String mutator and the dynamic length Array mutator work similarly. They are seeded with an empty string or array. Then one of the following mutation strategies is randomly chosen:
+\begin{itemize}
+    \item add - Adds a random value to the string or array at a random position.
+    \item remove - Removes a random value to the string or array at a random position if the string or array is not empty.
+    \item flip - Replaces a random value in the string or array with a random value.
+\end{itemize}
+
+The difference between the two that the array mutator also initializes a mutator for the type of the array.
+This mutator is used to generate the random values to be added by mutating the seed or when flipping a value by mutating the value at the corresponding position.
+
+The static length Array mutator is identical to the dynamic length Array mutator, except that it can only use the flip element mutation strategy.
+Therefore, not changing the size of the array.
 
 \subsection*{Tuple Mutator}
 
