@@ -2,3 +2,10 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Methodology / AlgoFuzz}\label{chapter:methodology}
+Based on our research on Algorand smart contracts, we decided to develop a property-based fuzzer for Algorand.
+As discussed in \ref{section:algorand-smartcontracts}, detecting errors that commonly happen in smart contracts can be better done by a static analyzer.
+For this reason, we chose to go the same route as echidna and implement a subset of the features that are present in it. We named the newly developed fuzzing tool \textit{AlgoFuzz}.
+In this chapter we discuss our general approach to fuzzing Algorand smart contracts and the implementation details of AlgoFuzz.
+
+\section{Fuzzing Approach}
+
