@@ -2,14 +2,11 @@
 
 \RequirePackage[l2tabu,orthodox]{nag}
 
-% TODO: decide if one-sided/two-sided
 %\documentclass[headsepline,footsepline,footinclude=false,fontsize=11pt,paper=a4,listof=totoc,bibliography=totoc,BCOR=12mm,DIV=12]{scrbook} % two-sided
 \documentclass[headsepline,footsepline,footinclude=false,oneside,fontsize=11pt,paper=a4,listof=totoc,bibliography=totoc]{scrbook} % one-sided
 
-% TODO: change citation style in settings
 \input{settings}
 
-% TODO: change thesis information
 \newcommand*{\getUniversity}{Technische Universität München}
 \newcommand*{\getFaculty}{Department of Computer Science}
 \newcommand*{\getDegree}{Informatics}
@@ -46,7 +43,7 @@
 \input{chapters/02_background}
 \input{chapters/03_methodology}
 \input{chapters/04_evaluation}
-\input{chapters/05_discussion.tex}
+\input{chapters/05_discussion}
 \input{chapters/06_conclusion}
 
 \appendix{}

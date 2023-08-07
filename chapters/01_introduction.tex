@@ -4,7 +4,6 @@
 \chapter{Introduction}\label{chapter:introduction}
 
 \section{Section}
-Citation test~\parencite{latex}.
 
 Acronyms must be added in \texttt{main.tex} and are referenced using macros. The first occurrence is automatically replaced with the long version of the acronym, while all subsequent usages use the abbreviation.
 
@@ -20,10 +19,10 @@ See~\autoref{tab:sample}, \autoref{fig:sample-drawing}, \autoref{fig:sample-plot
   \centering
   \begin{tabular}{l l l l}
     \toprule
-      A & B & C & D \\
+    A & B & C & D \\
     \midrule
-      1 & 2 & 1 & 2 \\
-      2 & 3 & 2 & 3 \\
+    1 & 2 & 1 & 2 \\
+    2 & 3 & 2 & 3 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -39,11 +38,11 @@ See~\autoref{tab:sample}, \autoref{fig:sample-drawing}, \autoref{fig:sample-plot
     \node (R4) [right of=R1] {$R_5$};
 
     \path[every node]
-      (R0) edge (R1)
-      (R0) edge (R3)
-      (R3) edge (R2)
-      (R2) edge (R1)
-      (R1) edge (R4);
+    (R0) edge (R1)
+    (R0) edge (R3)
+    (R3) edge (R2)
+    (R2) edge (R1)
+    (R1) edge (R4);
   \end{tikzpicture}
   \caption[Example drawing]{An example for a simple drawing.}\label{fig:sample-drawing}
 \end{figure}
@@ -87,7 +86,7 @@ See~\autoref{tab:sample}, \autoref{fig:sample-drawing}, \autoref{fig:sample-plot
 \begin{figure}[htpb]
   \centering
   \begin{tabular}{c}
-  \begin{lstlisting}[language=SQL]
+    \begin{lstlisting}[language=SQL]
     SELECT * FROM tbl WHERE tbl.str = "str"
   \end{lstlisting}
   \end{tabular}
