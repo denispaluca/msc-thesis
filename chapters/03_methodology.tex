@@ -41,6 +41,8 @@ Another limitation of our tool is that it expects opt-in calls to be empty.
 In some Algorand contracts, opt-in calls may be connected to a certain function call that requires specific arguments.
 Currently, it is not possible to infer from the ABI of the contract with which function an opt-in call is connected to.
 Therefore, we decided to leave this feature out of the initial implementation and we opt in all required accounts with empty application calls.
+Similarly to the opt-in calls, all other special calls are not executed by our tool.
+The fuzzer only executes noop applications calls.
 
 
 \section{Mutators} \label{section:mutators}
