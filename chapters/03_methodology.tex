@@ -64,7 +64,22 @@ This mutator generates random boolean values. The values are all seeded with \te
 The mutation strategy is simply to flip the value of the boolean.
 
 \subsection*{Uint, Ufixed and Byte Mutators}
+The Uint mutator generates random unsigned integer values. It is initialized with the size of the integer, from 8 to 256 bits. The seed value used is 0, since it is the smallest possible value and also a commonly used value. The mutation function chooses randomly from the following mutation strategies are used:
+\begin{itemize}
+    \item add - Adds a random value without overflowing.
+    \item subtract - Subtracts a random value without underflowing.
+    \item multiply - Multiplies the value with a random value without overflowing.
+    \item divide - Divides the value with a random value without underflowing.
+    \item random bit flip - Flips a random bit in the value.
+    \item bitwise and - Performs a bitwise and with a random value.
+    \item bitwise or - Performs a bitwise or with a random value.
+    \item bitwise xor - Performs a bitwise xor with a random value.
+\end{itemize}
+The effectiveness of these strategies in fuzzing has been shown in previous works and we expect them to be effective in our case as well.
 
+Ufixed and Byte mutators are special cases of the Uint mutator. The Ufixed mutator is initialized with the size of the integer part and the size of the fractional part. When mutating the value is first converted to an unsigned integer, mutated and then converted back to a fixed point number by dividing it with the fractional part size.
+
+The Byte mutator is an alias for the Uint mutator with a size of 8 bits.
 
 \subsection*{String, Array Dynamic and Array Static Mutators}
 
