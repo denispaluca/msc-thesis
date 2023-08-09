@@ -135,6 +135,32 @@ We applied this breakout mechanism to the method fuzzers as well.
 
 
 \section{Drivers}\label{section:drivers}
+Most fuzzers use different metrics to determine which inputs are interesting and which are not.
+We call these metrics the \textit{drivers} of the fuzzer.
+In this section, we will discuss the different drivers that we chose for our fuzzer.
+
+\subsection*{Coverage Driver}
+As mentioned most fuzzers use some sort of coverage information to guide the fuzzing process.
+This is also the case for our fuzzer.
+The coverage information is retrieved by running the application call in \texttt{dryrun} mode.
+What we retrieve from the \texttt{dryrun} call only tells us which lines of the code were executed.
+Although we can use this information to detect promising inputs, applying better heuristics, such as directed fuzzing, is not possible.
+The coverage information of a call is processed by creating a set of all the lines that were executed and associated with the corresponding input.
+
+\subsection*{State Driver}
+Since our fuzzer relies on property tests on the state of the contract to detect bugs, it makes sense to have a fuzzer which optimizes for generating inputs that produce different states.
+To use the state as a driver, we retrieve the global state of the application and the local states of the accounts in the account mutator.
+We then hash this information to create a unique identifier for the state and not store the entire state.
+This is necessary since the state can be very large and storing it for each input could be very expensive.
+One way of using this information to identify interesting inputs is by detecting if it produced a new state.
+This works fine, but we decided to consider transitions between states as interesting inputs.
+The reason for this is that in the future these transitions can be used to find the input sequence the produces a bug.
+It could do this by going through the transition graph and finding the shortest path between the initial state and the state that produces the bug.
+In Echidna this process is called \textit{shrinking}.
+The shrinking process is not implemented in our fuzzer, but it is a possible extension.
+
+\subsection*{Combined Driver}
+
 
 \section{Important Metrics}
 
