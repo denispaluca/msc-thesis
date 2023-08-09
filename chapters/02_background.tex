@@ -84,6 +84,7 @@ When a smart contract developer want to expose functions (or methods) he can use
     \item[string] A variable-length byte array (byte[]) assumed to contain UTF-8 encoded content
         (T1,T2,...,TN) A tuple of the types T1, T2, …, TN, N >= 0
     \item[reference] A uint8 parameter that points to an account, asset or application in the references array.
+    \item[transaction] A parameter that points to a transaction in a \textit{transaction group}.
 \end{description}
 
 In contrast to Ethereum, application calls on Algorand are not marked as payable or asset transfer etc. To send a payment or an asset transfer with an application call Algorand makes use of its atomic transfers feature. When a client sees that a payment is need for a method then he would need to add the payment and the application call in an atomic transfer. This way the payment and the application call will be executed together and the payment can be evaluated by the contract. These transactions can also be noted in the ABI as \texttt{pay} for payments, \texttt{acfg} for asset config/create, \texttt{axfer} for asset transfer, \texttt{afrz} for asset freeze and \texttt{keyreg} for key registration.
