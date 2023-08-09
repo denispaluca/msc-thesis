@@ -107,6 +107,32 @@ Therefore, not changing the size of the array.
 \section{Scheduler}
 
 \section{Partial and Total Fuzzing}
+For most smart contracts, the code of different methods is relatively independent to each other.
+Meaning the vast majority of methods are small, self-contained, and they rarely call common subroutines.
+From this point of view each method of the contract can be seen as a separate program.
+This means that we can fuzz each method separately and then combine the results.
+We call this approach \textit{partial fuzzing} (similar to a partial derivative in math).
+During fuzzing, the partial fuzzer creates only one application and a separate fuzzer for each method.
+These \textit{method fuzzers} each have their own population of interesting inputs, power schedules, seeds, and other fuzzing parameters.
+The population of inputs in this case being a list of tuples of the form \texttt{(arguments, account)}.
+On each iteration the partial fuzzer randomly chooses a method and runs the corresponding method fuzzer.
+All methods have the same probability of being chosen regardless of the amount interesting inputs are found for them.
+Although this approach seems naive, it has been shown to be reasonably effective in practice from our experiments.
+The main advantage of this approach is that it is very easy to implement and it generates new inputs faster.
+The performance gain comes from the fact that the schedulers of the different method fuzzers have fewer inputs to choose from.
+Another subtle advantage of the partial fuzzer is that methods which do not produce any interesting input during the seeding stage will not be completely ignored in the future fuzzing process.
+
+The second approach that we implemented is \textit{total fuzzing}.
+In this case, the fuzzer contains all necessary fuzzing parameters to fuzz the entire contract.
+Different from the method fuzzers in the partial fuzzer, the population of inputs is a list of tuples of the form \texttt{(function, arguments, account)}.
+This means that functions that produce more interesting inputs will be fuzzed more often which is the main advantage compared to the partial fuzzer.
+The main disadvantage is that methods which do not produce any interesting input during the seeding stage will be consequently completely ignored.
+To avoid this problem, we introduced a breakout mechanism through a coefficient passed to the constructor of the fuzzer.
+This coefficient is used to determine the probability of uniformly randomly choosing one of the seeds and producing a new input by mutating it.
+Since we create a seed for each function, there is a chance that the seed of a function that does not produce any interesting inputs is chosen.
+We applied this breakout mechanism to the method fuzzers as well.
+
+
 
 \section{Drivers}\label{section:drivers}
 
