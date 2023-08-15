@@ -98,6 +98,14 @@ Therefore, not changing the size of the array.
 \subsection*{Tuple Mutator}
 
 \subsection*{Account Mutator}
+The account mutator is needed not only to generate an account as an argument for an application call but also to generate the account which will be executing the call.
+This mutator is initialized with a list of funded accounts.
+Each account having a balance of 200 Algos.
+The seed value is the first account in the list.
+When the mutation method is called, we either return the current account passed to the mutator or we choose a random account from the list of funded accounts.
+This means that there is a 66\% chance that the account will stay the same and a 33\% chance that it will change.
+The reason for this is that we do not want the account to change too often.
+This insures that some calls will be executed from the current before switching to another account.
 
 \subsection*{Payment Mutator}
 
