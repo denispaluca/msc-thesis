@@ -17,12 +17,12 @@ The model of the Ethereum smart contracts is pretty simple and since Ethereum wa
 Allowing anyone to deploy and run arbitrary code on the network has led to the creation of a large ecosystem of \acp{dApp}. These \acp{dApp} are similar to traditional web applications, but they are not controlled by a single entity. Instead, they are controlled by the code that is deployed on the network. This means that the code is immutable and cannot be changed once it is deployed. This is a double-edged sword, as it means that the code cannot be changed if there is a bug or a security vulnerability. Usually smart contracts control large sums of digital currencies or digital assets, which makes them a very attractive target for attackers. For this two reasons combined, it is of utmost importance to ensure the security of the smart contract before they are deployed.
 
 
-\section{Smart Contract Security}
+\section{Smart Contract Security} \label{section:smart_contract_security}
 As we already laid out the importance of smart contract security, we will now explore the different types of vulnerabilities that can be found in smart contracts. Keeping smart contracts secure is compromised of two parts: writing vulnerability free smart contract code and also insuring that the administrating account of the smart contract is managed safely off-chain. We will be focusing on the first part.
 
 Smart contracts have a lot of idiosyncrasies that set them apart from usual computer programs. Therefore, the types of vulnerabilities that we face when developing smart contracts are usually specific to the world of blockchain and more precisely they differ from one blockchain network to the other. The following list is a non-exhaustive list of vulnerabilities that can be found in smart contracts:
 \begin{itemize}
-    \item \textbf{Reentrancy} - Although this vulnerability is specific to the Ethereum network, it is worth mentioning since it is one of the most iconic blockchain vulnerabilities. It is caused by the fact that the execution of a function is not atomic. This means that the execution of a function can be interrupted by another function call. This can lead to a vulnerability where a malicious user can call the same function multiple times before the first execution is finished. In this manner, the malicious user could be able to drain the funds of the contract.
+    \item \textbf{Reentrancy} - One of the most iconic vulnerabilities, which has lead to the loss of millions of dollars in cryptocurrencies. It is caused by the fact that the execution of a function is not atomic. This means that the execution of a function can be interrupted by another function call. This can lead to a vulnerability where a malicious user can call the same function multiple times before the first execution is finished. In this manner, the malicious user could be able to drain the funds of the contract.
     \item \textbf{Integer Overflow and Underflow} - This vulnerability is not specific to smart contracts, but it is more prevalent in smart contracts due to the fact that most networks use fixed-size integers. This means that the maximum value of an integer is usually 2\textsuperscript{256}-1. If the result of an operation on integers is larger than the maximum value, the result will overflow and the integer will wrap around to 0. This can lead to a vulnerability where a malicious user can overflow the balance of the contract and drain all the funds.
     \item \textbf{Timestamp Dependence} - This vulnerability is also not specific to smart contracts, but it is more prevalent in smart contracts due to the fact that the most networks has a timestamp variable. This variable can be manipulated by the miner that mines the block that contains the transaction. This can lead to a vulnerability where a malicious user can call a function at a specific time to exploit the contract.
     \item \textbf{Front-running} - This vulnerability is specific to smart contracts. It is caused by the fact that the order of transactions is not deterministic. This means that a malicious user can submit a transaction that is executed before another transaction that was submitted earlier. This can lead to a vulnerability where a malicious user can exploit a contract by submitting a transaction that is executed before a transaction that was meant to prevent the exploit. After Ethereum transitioned to proof-of-state, the vulnerability still persists since the block proposer can choose which transactions to include and their order in the block.
@@ -30,7 +30,7 @@ Smart contracts have a lot of idiosyncrasies that set them apart from usual comp
     \item \textbf{Simple Logical Errors} - Although most smart contract are thoroughly scrutinized by the community, still a significant number of vulnerabilities are caused by simple logical errors. These errors cannot be simply avoided by adding features to your blockchain, as they are inherent in all computer programs written by humans.
 \end{itemize}
 
-To deal with these vulnerabilities different tools have been proposed such as static analysis tools, symbolic execution tools and fuzzers, while we will discuss more of on section \ref{section:fuzzing}.
+To deal with these vulnerabilities different tools have been proposed such as static analysis tools, symbolic execution tools and fuzzers, which we will discuss more of on section \ref{section:fuzzing}.
 
 In the next section we will explore the Algorand blockchain network, its smart contracts, how it handles the previously mentioned vulnerabilities and which vulnerabilities are specific to it.
 
@@ -88,6 +88,16 @@ When a smart contract developer want to expose functions (or methods) he can use
 \end{description}
 
 In contrast to Ethereum, application calls on Algorand are not marked as payable or asset transfer etc. To send a payment or an asset transfer with an application call Algorand makes use of its atomic transfers feature. When a client sees that a payment is need for a method then he would need to add the payment and the application call in an atomic transfer. This way the payment and the application call will be executed together and the payment can be evaluated by the contract. These transactions can also be noted in the \ac{ABI} as \texttt{pay} for payments, \texttt{acfg} for asset config/create, \texttt{axfer} for asset transfer, \texttt{afrz} for asset freeze and \texttt{keyreg} for key registration.
+
+
+\subsection*{Algorand Smart Contract Security} \label{section:algorand-smartcontracts-security}
+Smart contracts on Algorand have their own set of common vulnerabilities. Most of the previously mentioned vulnerabilities (section \ref{section:smart_contract_security}) are not applicable to Algorand smart contracts for the following reasons:
+\begin{itemize}
+    \item \textbf{Reentrancy} - Application calls and payment/asset transfers are different types of transactions in Algorand. Payment and asset transfers do not trigger any code execution. Also, an application cannot make a call to itself directly or indirectly. This means that reentrancy is not possible.
+    \item \textbf{Integer Overflow and Underflow} - All overflows and underflows halt the execution and fail the current transaction.
+    \item \textbf{Front-running} - The block proposer in Algorand is chosen randomly. The proposer cannot know beforehand whether he will be the next proposer. Therefore, the ability to front run is massively mitigated.
+    \item \textbf{Resource Limit Vulnerabilities}
+\end{itemize}
 
 
 
