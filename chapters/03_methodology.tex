@@ -108,6 +108,16 @@ The reason for this is that we do not want the account to change too often.
 This insures that some calls will be executed from the current before switching to another account.
 
 \subsection*{Payment Mutator}
+The payment mutator is used to generate payment objects for method calls which require a payment.
+The payment object contains only the amount of Algos to be transferred.
+These objects are then transformed into a payment transaction and grouped with the application call.
+The recipient of the payment is always the account of the application being fuzzed.
+Since we are using a local network, we cannot send arbitrary amounts of Algos as there is a limit on the amount of Algos available.
+The amount of Algos send will just be a random value between 0 and 100 Algos, which is around the average transaction on Algorand.
+In the future this could be a configurable value for the fuzzer.
+When one of the accounts has less than 200 Algos, we fund the account with an additional 1 million Algos.
+This way our transaction does not fail due to insufficient funds.
+
 
 \subsection*{Method Mutator}
 
