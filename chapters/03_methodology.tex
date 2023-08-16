@@ -190,5 +190,30 @@ Form our experiments, we found that using a coefficient of 0.5 works best for th
 With this coefficient, the state driver and the coverage driver are equally important.
 
 \section{Important Metrics}
+In this section, we will discuss the different metrics that we used to evaluate our fuzzer.
+
+\paragraph{Number of calls executed} Shows us how efficient the fuzzer is at generating inputs and calling the application.
+Since fuzzing is a random process, the number of calls executed needs to be very large to get meaningful inputs.
+
+\paragraph{Number/Ratio of rejected calls} Any call that is rejected by the application is not interesting.
+The ratio is the number of rejected calls divided by the total number of calls.
+The lower the ratio, the better.
+Fuzzers that have a low ratio of rejected calls have a higher probability of generating interesting inputs and finding the contract.
+
+\paragraph{Number/Ratio of lines covered} The number of unique lines covered is the number of lines that were executed during the fuzzing process.
+The ratio is the number of unique lines covered divided by the total number of lines in the \ac{TEAL} approval program of the contract.
+This is a metric that is used by most fuzzers.
+
+\paragraph{Number of unique paths} Every set of lines covered produced by a call is a coverage path.
+This gives us a metric of how many different paths were executed during the fuzzing process.
+In general, the more paths are covered, the better.
+Although, a higher number of paths does not necessarily mean that more lines were covered.
+This is because a path can be a subset of another path.
+
+\paragraph{Number of unique state transition} We record all unique state transitions that were produced by the fuzzing process.
+The more transitions are produced, the closer the fuzzer can be to finding a state that would invalidate the property test.
+
+
+
 
 \section{Case Study: AlgoTether}
