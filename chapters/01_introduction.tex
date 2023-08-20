@@ -43,4 +43,19 @@ However, the lack of a mature tooling ecosystem for Algorand smart contracts has
 In this thesis, we propose a novel fuzzing tool designed specifically for Algorand smart contracts called \textit{AlgoFuzz}.
 AlgoFuzz is a property-based fuzzer with a feature set similar to Echidna.
 Our tool tests smart contracts in a dockerized environment running a local sandbox version of an Algorand node.
-The fuzzer leverages greybox fuzzing techniques to generate inputs that maximize not only code coverage but also the discovered state space of the smart contract.
+AlgoFuzz leverages greybox fuzzing techniques to generate inputs that maximize not only code coverage but also the discovered state space of the smart contract.
+
+The main goal of this project is the development of AlgoFuzz, which will serve as a foundation for future work in the field of Algorand smart contract fuzzing.
+We also aim to evaluate the effectiveness of AlgoFuzz  through a series of experiments.
+The experiments will be conducted on a set of Algorand smart contracts which are adopted from the Ethereum smart contracts used in the Echidna benchmark suite.
+
+\section*{Thesis Structure}
+The remainder of this thesis is structured as follows.
+In Chapter \ref{chapter:background}, we provide the necessary background information on blockchain, smart contracts, smart contract security, Algorand, fuzzing and related work.
+Next, in Chapter \ref{chapter:methodology}, we describe the methodology used to develop AlgoFuzz, such as the design decisions we took, the features and limitations which guided those decisions, and we conclude with a case study.
+Chapter \ref{chapter:evaluation} lays out the research questions, sets up the experimental environment, and presents the results of the experiments.
+These results are then discussed in Chapter \ref{chapter:discussion} in the context of the research questions. Furthermore, in the same chapter, we also discuss the limitations of our work by provided possible threats to validity.
+Finally, in Chapter \ref{chapter:conclusion}, we conclude the thesis by summarizing our findings and discussing possible future work.
+
+
+
