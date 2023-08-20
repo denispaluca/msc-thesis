@@ -24,7 +24,7 @@ Fuzzing has achieved great success in detecting security flaws, and because of t
 
 Fuzzing has been used to detect vulnerabilities for smart contracts as well.
 However, adapting fuzzing techniques to smart contracts has presented its own set of challenges.
-Different from normal programs, in smart contracts crashes, assertion failures and memory leaks are not a concern since the transaction will simply be reverted.
+Smart contracts are distinct from traditional programs in that concerns like crashes, assertion failures, and memory leaks typically do not impact them. If such issues arise, the transaction is simply reverted, ensuring the blockchain's state remains unchanged.
 For this reason, most existing fuzzers for smart contracts focus on detecting some specific common vulnerabilities.
 A different approach is to allow the user to specify a set of properties that the fuzzer should check for.
 This approach is called property-based fuzzing.
