@@ -42,5 +42,5 @@ However, the lack of a mature tooling ecosystem for Algorand smart contracts has
 
 In this thesis, we propose a novel fuzzing tool designed specifically for Algorand smart contracts called \textit{AlgoFuzz}.
 AlgoFuzz is a property-based fuzzer with a feature set similar to Echidna.
-Our tool addresses the challenges
-The fuzzer leverages greybox fuzzing techniques to generate inputs that maximize not only code coverage but also the state space of the smart contract.
+Our tool tests smart contracts in a dockerized environment running a local sandbox version of an Algorand node.
+The fuzzer leverages greybox fuzzing techniques to generate inputs that maximize not only code coverage but also the discovered state space of the smart contract.
