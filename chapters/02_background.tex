@@ -108,7 +108,10 @@ From the previous list of vulnerabilities, only \textbf{Resource Limit Vulnerabi
     \item \textbf{Unchecked receiver} - As we mentioned, a payment or an asset transfer can be grouped together with the application call. The application call and the transfer even though grouped together, have no relation to each other. Developers (for example coming from Ethereum) might assume that the receiver of the transfer is automatically the account of the current application. An attacker could use this to his advantage.
 \end{itemize}
 
-
+These and other similar types of vulnerabilities are present in Algorand smart contracts.
+What's common about these vulnerabilities is that they are very simple in nature.
+They are not caused by the complexity of the smart contract, but rather by the lack of proper checks.
+This simplicity of the common vulnerabilities and how it affected our design choices will be discussed in Chapter \ref{chapter:methodology}.
 
 \section{Fuzzing} \label{section:fuzzing}
 
