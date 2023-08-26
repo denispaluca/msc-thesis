@@ -142,6 +142,22 @@ The fuzzing process is usually represented by the following steps:
     \end{algorithmic}
 \end{algorithm}
 
+Because there is a time limit on the fuzzing process, most fuzzers want to prioritize the input that is most likely to trigger a bug.
+This is usually done by using different metrics to decide which input is more interesting in this regard.
+One of the most popular metrics is code coverage.
+The idea is that the input that covers the most code is more likely to trigger a bug.
+In such fuzzers, interesting inputs are saved and prioritized based on the rareness of their coverage path.
+This measure of how interesting an input is, is often called the \textit{energy} of the input.
+To facilitate this, the fuzzers usually have an architecture consisting of the following parts:
+\begin{itemize}
+    \item \textbf{Fuzzer} - Runner of the main fuzzing loop.
+    \item \textbf{Schedule} - Defines how the fuzzing should be distributed across the population.
+    \item \textbf{Input Generator} - Generates the input for the fuzzing process. There are many different types of input generators, the most popular ones being mutation-based.
+    \item \textbf{Seed} - This represents an interesting input that contains that data, the energy and other information about the particular input.
+\end{itemize}
+
+
+
 
 
 \section{Related Work}
