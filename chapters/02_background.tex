@@ -118,6 +118,29 @@ The concept of fuzzing can be traced back to the 1980s when Professor Barton Mil
 Out of the programs tested 25\% to 33\% crashed, which at the time was a surprising result.
 From this work the first fuzzing tool was built to allow other researchers to conduct similar experiments.
 
+The main idea behind fuzzing is providing random input for the program under test and monitoring its behavior.
+The fuzzing process is usually represented by the following steps:
+\begin{enumerate}
+    \item Input is generated given a fuzzing configuration.
+    \item The generated input is evaluated against the program, given a certain bug oracle.
+    \item The evaluation results are used to improve the fuzzing configuration.
+    \item The process is repeated until the time limit is reached or the bug oracle is satisfied.
+\end{enumerate}
+
+\begin{algorithm}
+    \caption{Generic fuzzing algorithm}\label{alg:fuzz}
+    \begin{algorithmic}
+        \item \textbf{Input: } $conf, t_{limit}$
+        \item \textbf{Output: } $\mathbb{R} - results$
+        \State $\mathbb{R} \gets \emptyset$
+        \While{$t_{elapsed} < t_{limit} \land \textbf{Continue}(result)$}
+        \State $input \gets \textbf{InputGen}(conf)$
+        \State $result, execinfo \gets \textbf{InputEval}(input, O_{bug})$
+        \State $conf \gets \textbf{ConfUpdate}(conf, result, execinfo)$
+        \State $\mathbb{R} \gets \mathbb{R} \cup \{result\}$
+        \EndWhile
+    \end{algorithmic}
+\end{algorithm}
 
 
 
