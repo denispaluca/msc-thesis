@@ -166,3 +166,47 @@ This architecture shown in Figure \ref{fig:generic-fuzzer-architecture} will als
 
 \section{Related Work}
 In this section we will explore the existing work in the field of smart contract fuzzing. Next, we review existing tools that aim to improve the security of Algorand smart contracts. Finally, we present the research gap that our work aims to fill.
+
+\subsection*{Smart Contract Fuzzing}
+A number of fuzzers have been developed for smart contracts.
+The vast majority of them target Ethereum smart contracts.
+Here is a brief overview of the most notable ones:
+\begin{itemize}
+    \item \textbf{Echidna}: One of the most prominent fuzzers for Ethereum smart contracts is Echidna. Developed by Trail of Bits, Echidna is a property-based fuzzer that tests the contract's invariants using random transactions.
+          Echidna has been employed in numerous security audits and has proven to be effective in uncovering bugs in Ethereum contracts \cite{grieco_echidna_2020}.
+          It makes use of an EVM implementation written in Haskell called \textit{hevm}, which allows it to run the contracts in a sandboxed environment.
+
+    \item \textbf{ContractFuzzer}: Introduced in 2018, it stands as one of the earliest examples of fuzzing applied to smart contracts.
+          The fuzzer uses static analysis in combination with fuzzing to generate inputs that are more likely to trigger bugs.
+          Different from Echidna, it uses a private Ethereum network to run the contracts.
+          One big contribution of this work is one of the first introductions of specific bug oracles for ethereum smart contracts.
+    \item \textbf{Harvey}: One of the few closed sourced fuzzing engines.
+          It is one of the fuzzers with most industrial use.
+          The company Consensys has used it to build their smart contract fuzzing platform called Diligence Fuzzing.
+    \item \textbf{Notable non ethereum fuzzers}: There are several other fuzzers like HFContractFuzzer, EOSFuzzer, and AntFuzzer.
+          These fuzzers target other smart contract platforms like EOS and Hyperledger Fabric.
+
+\end{itemize}
+
+\subsection*{Algorand Smart Contract Security}
+Algorand, while not as extensively explored as Ethereum in terms of security tooling, has seen efforts directed towards enhancing the security of its smart contracts:
+\begin{itemize}
+    \item \textbf{Tealer}: This is a static analysis tool that checks for common vulnerabilities in Algorand smart contracts.
+          Most of the checks are based on the vulnerabilities that we mentioned in section \ref{section:algorand-smartcontracts-security}.
+          As the vulnerabilities are simple in nature, the tool is capable of detecting most of them.
+
+    \item \textbf{Panda}: It is another static analysis tool for Algorand contracts.
+          Different from Tealer, the user can define custom rules to check for vulnerabilities, aside from the ones that are already implemented.
+          The tool has found many vulnerabilities in real world projects which have been acknowledged by the respective teams.
+    \item \textbf{AlgoBuilder}: A framework for building \acp{dApp} for Algorand.
+          Included with the framework is a testing tool that allows the developer to write tests for their smart contracts.
+\end{itemize}
+
+\subsection*{Research Gap}
+Despite the efforts and tools available for ensuring the security of Algorand smart contracts, there exists a significant gap in the domain of fuzzing.
+While Ethereum has seen a multitude of fuzzers, Algorand lacks a dedicated fuzzer tailored for its unique smart contract architecture and the TEAL scripting language.
+In the GitHub repository of Algorand, there is a fuzzer called \textit{TealFuzz}, but the project is currently abandoned, with the last commit being made in 2020.
+
+As Algorand continues to gain traction, the complexity of its smart contracts will increase.
+The security of these contracts will need to be handled from all angles.
+Therefore, a dedicated fuzzer for Algorand smart contracts is a necessary addition to the security tooling of the network.
