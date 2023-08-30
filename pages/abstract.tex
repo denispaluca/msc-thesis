@@ -1,9 +1,14 @@
 \chapter{\abstractname}
 Smart contracts, which are immutable programs that automate agreements between parties, are critical components in many blockchain networks. Their increasing role in sensitive financial transactions has heightened the importance of their security.
-However, traditional software testing methodologies, like unit testing, have proven inadequate in improving smart contract security.
-Instead, fuzzing has emerged as a promising technique for finding bugs in smart contracts.
-While fuzzing techniques have faced challenges in adapting to smart contracts' distinct nature, property-based fuzzing tools such as Echidna have shown promise for Ethereum smart contracts.
-With the emergence of newer blockchain platforms like Algorand, which offers advantages like high throughput, low latency, and lower transaction fees, there is a pressing need for specific tooling to ensure secure smart contracts.
+However, traditional software testing methodologies, such as unit testing, have proven inadequate in improving smart contract security.
+These methods often test the functionality in isolation and do not account for the complex interactions between smart contracts and the blockchain.
+Fuzzing, a software testing technique where random data inputs are injected into a program to uncover bugs, has emerged as a promising solution for enhancing smart contract security.
+While fuzzing techniques have faced challenges in adapting to smart contracts' distinct nature, such as the difficulty of defining bug oracles, property-based fuzzing tools such as Echidna have shown promise for Ethereum smart contracts.
+With the emergence of newer blockchain platforms like Algorand, which offers advantages like high throughput, low latency, and lower transaction fees, there is a limited number of specific tooling to ensure secure smart contracts.
 This thesis introduces AlgoFuzz, a property-based fuzzing tool tailored for Algorand smart contracts.
-The tool uses greybox fuzzing techniques to maximize code coverage and the discovered state space.
-To evaluate the efficacy of AlgoFuzz, it is examined through experiments on adapted Algorand smart contracts from the Echidna benchmarks.
+The tool uses greybox fuzzing techniques to maximize code coverage and the discovered state space (the set of all possible states a specific smart contract can exist in).
+To evaluate the efficacy of AlgoFuzz, it is examined through experiments on Algorand smart contracts translated  from the Solidity contracts in Echidna benchmarks. The experiment ran for 10 times for 10 minutes for 6 different configurations of the fuzzer on all contracts.
+Aside from that, we also evaluate the performance of AlgoFuzz on two larger Algorand smart contracts, one of which is translated from the USD Tether smart contract and the other is a smart contract for a token exchange.
+In this case the experiment ran for 30 minutes while all other configurations remained the same as the previous experiment.
+For the Echidna benchmarks, AlgoFuzz was able to cover 64.04\% of the code, discover 2.66 unique coverage paths, and make 10840.12 unique state transitions on average. For the two larger contracts, these values were 72.56\%, 11.14, 14113.64 respectively.
+
