@@ -53,17 +53,17 @@ Different from other networks, the ability to create fungible and non-fungible t
 Smart signatures are another feature of the Algorand network, which should not be confused with smart contracts. They are similar to the Bitcoin Scripts. They contain logic that is used to sign a transaction. This logic is then submitted together with the transaction. The logic is then executed by the nodes in the network and if the execution is successful, the transaction is signed and submitted to the network.
 
 \subsection*{Algorand Smart Contracts} \label{section:algorand-smartcontracts}
-On the Algorand network smart contracts are written with TEAL (Transaction Execution Approval Language), which is an assembly-like language that is interpreted by the \ac{AVM}. The language is Turing-complete, but the time a contract has to execute is limited. The contracts written with TEAL can be deployed and remotely called from any node in the Algorand blockchain. An on-chain instantiation of an Algorand smart contract is called an \textit{Application}. Special transactions, named \textit{Application Call transactions}, are required to trigger the different functions of the application. Similar to Ethereum smart contracts, an application can modify state, access on-chain values and execute transactions. Each application has an associated account, that only the application can control.
+On the Algorand network smart contracts are written with TEAL (Transaction Execution Approval Language), which is a Turing-complete assembly-like language that is interpreted by the \ac{AVM} \cite{noauthor_introduction_nodate}. The contracts written with TEAL can be deployed and remotely called from any node in the Algorand blockchain. An on-chain instantiation of an Algorand smart contract is called an \textit{Application}. Special transactions, named \textit{Application Call transactions}, are required to trigger the different functions of the application. Similar to Ethereum smart contracts, an application can modify state, access on-chain values and execute transactions. Each application has an associated account, that only the application can control.
 
-An application can store state in three different ways:
+An application can store state in three different ways \cite{noauthor_contract_nodate}:
 \begin{itemize}
     \item \textbf{Global Storage} - This is stored on the application itself and only the application can modify it. It allows for the storage of up to 64 key-value pairs. The amount of required storage must be determined on creation and it cannot be changed afterwards.
-    \item \textbf{Local Storage} - Similarly to global storage, it is also determined on creation and cannot be change. The maximum amount of key-value pairs is 16. The difference is that local storage is stored on the account that called the application. The local storage of an account is allocated after an account submits an \textit{opt-in} application call (see below). The user can also remove the local storage from his account by submitting a \textit{clear state} application call.
+    \item \textbf{Local Storage} - Similarly to global storage, it is also determined on creation and cannot be change. The maximum amount of key-value pairs is 16. The difference is that local storage is stored on the account that called the application. The local storage of an account is allocated after an account submits an \textit{opt-in} application call. The user can also remove the local storage from his account by submitting a \textit{clear state} application call.
     \item \textbf{Box Storage} - Box storage is similar to global storage, the only meaningful difference being box storage can be dynamically allocated. The box id is required when making an application call for the box storage to be allocated or to be read.
 \end{itemize}
 Since the state is stored on the blockchain, it is publicly available to anyone. This means it can be read by clients but also by other applications. This allows for the creation of more complex applications that interact with each other.
 
-Smart contracts are implemented with two independent programs: the \textit{Approval Program} and the \textit{Clear State Program}. When making an application call transaction, one can choose form the following transaction types:
+Smart contracts are implemented with two independent programs: the \textit{Approval Program} and the \textit{Clear State Program}. When making an application call transaction, one can choose form the following transaction types \cite{noauthor_overview_nodate}:
 \begin{itemize}
     \item \textbf{NoOp} - Generic application call to execute the Approval Program.
     \item \textbf{OptIn} - Begins participation and enables local storage for an application.
@@ -75,7 +75,7 @@ Smart contracts are implemented with two independent programs: the \textit{Appro
 
 Contracts often require data stored within the ledger. To maintain a high level of performance, the \ac{AVM} restricts how much of the ledger can be accessed by an application during execution. This is implemented by having references passed to an application call transaction, which denote the on-chain data the application could access. These references are passed as reference arrays to the call and they may contain the following types of references: Accounts, Assets (\ac{ASA}), Applications and Boxes.
 
-When a smart contract developer want to expose functions (or methods) he can use the \ac{ABI} specification defined in \ac{ARC} 4. This way clients can easily interact with the application. Adhering to the \ac{ABI} specification is not mandatory and many contracts are written without it. Method parameters can have the following types:
+When a smart contract developer want to expose functions (or methods) he can use the \ac{ABI} specification defined in \ac{ARC} 4 \cite{noauthor_arcsarcsarc-0004md_nodate}. This way clients can easily interact with the application. Adhering to the \ac{ABI} specification is not mandatory and many contracts are written without it. Method parameters can have the following types:
 \begin{description}
     \item[uintN] An N-bit unsigned integer, where 8 <= N <= 512 and N \% 8 = 0
     \item[byte]	An alias for uint8
@@ -104,7 +104,7 @@ Smart contracts on Algorand have their own set of common vulnerabilities. Most o
     \item \textbf{Time Dependence} - Although Algorand smart contracts can use a timestamp variable, it is very difficult to manipulate it. Similar to front-running, the block proposer cannot know beforehand whether he will be the next proposer.
 \end{itemize}
 
-From the previous list of vulnerabilities, only \textbf{Resource Limit Vulnerabilities} and \textbf{Simple Logical Errors} are applicable to Algorand smart contracts. The following list is a non-exhaustive list of Algorand specific vulnerabilities that are commonly encountered:
+From the previous list of vulnerabilities, only \textbf{Resource Limit Vulnerabilities} and \textbf{Simple Logical Errors} are applicable to Algorand smart contracts. The following list is a non-exhaustive list of Algorand specific vulnerabilities that are commonly encountered \cite{crytic_building-secure-contractsnot-so-smart-contractsalgorand_nodate,sun_panda_2023}:
 \begin{itemize}
     \item \textbf{Rekeying} - The \texttt{rekey-to} field is not checked by the smart contract. An attacker could use this to take control of the account associated with the smart contract.
     \item \textbf{Unchecked Group Size} - An attacker can create correct transactions at the particular indices. Then, he can populate the rest of the indices with malicious transactions. When the group size is not checked, the malicious transactions will be executed together with the correct transactions.
