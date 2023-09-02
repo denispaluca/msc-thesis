@@ -9,7 +9,7 @@ They are self-executing programs that run on the blockchain and are used to auto
 As smart contracts handle an increasing set of sensitive transactions, ranging from financial agreements to supply chain management, making them secure has become a top priority.
 The financial value locked in these smart contracts coupled with the fact that they are immutable (meaning their code cannot be changed once deployed), makes exploiting their vulnerabilities a lucrative target for attackers.
 In the recent past, we have witnessed several high-profile attacks on smart contracts, which have resulted in the loss of billions of dollars in value  \cite{noauthor_funds_nodate}.
-On such attack was the Wormhole hack, which resulted in the loss of \$320 million worth of cryptocurrency \cite{faife_wormhole_2022}.
+One such attack was the Wormhole hack, which resulted in the loss of \$320 million worth of cryptocurrency \cite{faife_wormhole_2022}.
 
 As with regular software, different software testing techniques have been proposed and are being actively used to detect vulnerabilities in smart contracts.
 Traditionally software testing methodologies such as unit testing, have shown to be minimally effective in improving the security of smart contracts when used on their own \cite{noauthor_smart_nodate}.
@@ -26,7 +26,7 @@ Fuzzing has achieved great success in detecting security flaws, and because of t
 Fuzzing has been used to detect vulnerabilities for smart contracts as well.
 However, adapting fuzzing techniques to smart contracts has presented its own set of challenges.
 Smart contracts are distinct from traditional programs in that concerns like crashes, assertion failures, and memory leaks typically do not impact them. If such issues arise, the transaction is simply reverted, ensuring the blockchain's state remains unchanged.
-For this reason, most existing fuzzers for smart contracts focus on detecting some specific common vulnerabilities, such as reentrancy where a call is exploited to re-run multiple times before finishing.
+For this reason, most existing fuzzers for smart contracts focus on detecting some specific common vulnerabilities, such as \textit{reentrancy} where a function call is exploited to re-run multiple times before finishing.
 A different approach is to allow the user to specify a set of properties that the fuzzer should check for.
 This approach is called property-based fuzzing.
 It requires the user to have a good understanding of the smart contract and the vulnerabilities that it may contain.
