@@ -196,8 +196,14 @@ Here is a brief overview of the most notable ones:
 
 \end{itemize}
 
-\subsection*{Algorand Smart Contract Security}
-Algorand, while not as extensively explored as Ethereum in terms of security tooling, has seen efforts directed towards enhancing the security of its smart contracts:
+The most common approach to evaluating the above-mentioned fuzzers was to run them on a set of smart contracts.
+The set of smart contract used is different for each fuzzer.
+This set is either randomly chosen from real world contracts, contracts that are known to contain vulnerabilities which the fuzzer could detect or contracts with injected bugs (usually by inserting \texttt{assert(false)}).
+The results of the fuzzers are then evaluated based on the number of bugs or in the case of Echidna, the reached assertion failures.
+The efficiency of the fuzzers is also evaluated based on the number of transactions that were executed during the fuzzing process.
+
+\subsection*{Algorand Security Tooling}
+Algorand, while not as extensively explored as Ethereum in terms of security tooling, has seen efforts directed towards enhancing the security of its smart contracts. Some of the most notable tools are:
 \begin{itemize}
     \item \textbf{Tealer}: This is a static analysis tool that checks for common vulnerabilities in Algorand smart contracts \cite{noauthor_crytictealer_nodate}.
           Most of the checks are based on the vulnerabilities that we mentioned in section \ref{section:algorand-smartcontracts-security}.
@@ -207,7 +213,7 @@ Algorand, while not as extensively explored as Ethereum in terms of security too
           Different from Tealer, the user can define custom rules to check for vulnerabilities, aside from the ones that are already implemented.
           The tool has found many vulnerabilities in real world projects which have been acknowledged by the respective teams.
     \item \textbf{AlgoBuilder}: A framework for building \acp{dApp} for Algorand \cite{noauthor_algo_nodate}.
-          Included with the framework is a testing tool that allows the developer to write tests for their smart contracts.
+          Included with the framework is a testing tool that allows the developer to write unit and integration tests for their smart contracts.
 \end{itemize}
 
 \subsection*{Research Gap}
