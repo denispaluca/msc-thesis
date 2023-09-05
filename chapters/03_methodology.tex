@@ -84,13 +84,13 @@ This can be extended in the future to make it possible fuzzing applications on t
 
 \subsection*{Execution Environment}
 
+\subsection*{Limitations}
+
 \subsection*{Architecture}
 
-\subsubsection*{Mutators}
+\section{Implementation}
 
-\subsection*{Implementation}
-
-\section{Mutators} \label{section:mutators}
+\subsection*{Mutators} \label{section:mutators}
 In this section we will go through the mutators and the heuristics that we implemented for our fuzzer.
 A mutator has two important methods:
 \begin{itemize}
@@ -163,9 +163,9 @@ This way our transaction does not fail due to insufficient funds.
 \subsection*{Method Mutator}
 
 
-\section{Scheduler}
+\subsection*{Scheduler}
 
-\section{Partial and Total Fuzzing}
+\subsection*{Partial and Total Fuzzing}
 For most smart contracts, the code of different methods is relatively independent to each other.
 Meaning the vast majority of methods are small, self-contained, and they rarely call common subroutines.
 From this point of view each method of the contract can be seen as a separate program.
@@ -193,7 +193,7 @@ We applied this breakout mechanism to the method fuzzers as well.
 
 
 
-\section{Drivers}\label{section:drivers}
+\subsection*{Drivers}\label{section:drivers}
 Most fuzzers use different metrics to determine which inputs are interesting and which are not.
 We call these metrics the \textit{drivers} of the fuzzer.
 In this section, we will discuss the different drivers that we chose for our fuzzer.
