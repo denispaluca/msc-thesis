@@ -74,21 +74,21 @@ Smart contracts are usually small programs \cite{gao_checking_2021}, so they are
 \subsection*{Execution Environment}
 \paragraph*{Contract.} The smart contracts being fuzzed will be deployed on a local Algorand network. This network usually comes with the official AlgoKit CLI tool \cite{noauthor_algokit_nodate}. The setup for such a network is straightforward and can be done with a single command. The local network starts three docker containers to simulate the Algorand blockchain with a REST-API for users to interact with the local network outside the container.
 
-We also looked at different interpreters for \ac{TEAL} that simulate the \ac{AVM} such as teal-interpreter \cite{} and the AlgoBuilder Runtime.
+We also looked at different interpreters for \ac{TEAL} that simulate the \ac{AVM} such as teal-interpreter \cite{noauthor_hone-labsteal-interpreter_nodate} and the AlgoBuilder Runtime \cite{noauthor_algo-builderruntime_nodate}.
 Both these projects can be import as NPM packages to be used in JavaScript projects.
 We decided against using these tools for the following reasons:
 \begin{itemize}
     \item They are not official tools and are not maintained by the Algorand Foundation.
     \item They are not as well documented as the official tools.
     \item Executing the smart contracts on the local network is most similar to how they would be executed on the Algorand network.
-    \item teal-interpreter has had no commits in more than one year, supports only up to \ac{TEAL} version 5 and does not support all opcodes.
+    \item teal-interpreter has had no commits in more than one year, supports only up to \ac{TEAL} version 5 (current version is 8) and does not support all opcodes.
 \end{itemize}
 
-\paragraph*{Fuzzer} The fuzzer is implemented in Python and it uses the Algorand Python SDK which connects to the REST-API of the local network.
+\paragraph*{Fuzzer.} The fuzzer is implemented in Python and it uses the Algorand Python SDK which connects to the \acs{REST} \acs{API} of the local network.
 We decided to use Python since we also wanted to use PyTeal to write our own Algorand contracts.
 This way we can easily write test suites for our contracts.
 Fuzzers usually rely on generating a large amount of inputs and therefore need a very performant language.
-Although Python is not the fastest language, we expected most of the time to be spent on the REST-API calls to the local network.
+Although Python is not the fastest language, we expected most of the time to be spent on the \acs{API} calls to the local network.
 
 \subsection*{Limitations}
 
