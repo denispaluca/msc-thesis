@@ -83,6 +83,7 @@ Although Python is not the fastest language, we expected most of the time to be 
 Despite the advantages, using the technologies and approaches that we have chosen comes with some limitations.
 The first one being that the performance of our fuzzer will be limited by the performance of the local network.
 The local network is relatively slow since it simulates all Algorand blockchain operations, such as adding and verifying blocks.
+Due to this, we also need to fund the accounts that we use for the fuzzing process which requires a transaction from a dispenser account to the account being funded.
 Parallelizing the fuzzing process would also not work.
 Even though the local network can take multiple transactions at the same time, it will only execute them sequentially.
 Aside from this, making requests back and forth to the local network is slower than having an interpreter in the same process.
@@ -125,11 +126,10 @@ A mutator has two important methods:
           Currently, we have chosen simple initial values for all different types.
 \end{itemize}
 
-\subsection*{Boolean Mutator}
-This mutator generates random boolean values. The values are all seeded with \texttt{False}.
+\paragraph{Boolean.} This mutator generates random boolean values. The values are all seeded with \texttt{False}.
 The mutation strategy is simply to flip the value of the boolean.
 
-\subsection*{Uint, Ufixed and Byte Mutators}
+\paragraph{Uint, Ufixed and Byte.}
 The Uint mutator generates random unsigned integer values. It is initialized with the size of the integer, from 8 to 256 bits. The seed value used is 0, since it is the smallest possible value and also a commonly used value. The mutation function chooses randomly from the following mutation strategies are used:
 \begin{itemize}
     \item add - Adds a random value without overflowing.
@@ -143,11 +143,9 @@ The Uint mutator generates random unsigned integer values. It is initialized wit
 \end{itemize}
 The effectiveness of these strategies in fuzzing has been shown in previous works and we expect them to be effective in our case as well.
 
-Ufixed and Byte mutators are special cases of the Uint mutator. The Ufixed mutator is initialized with the size of the integer part and the size of the fractional part. When mutating the value is first converted to an unsigned integer, mutated and then converted back to a fixed point number by dividing it with the fractional part size.
+Ufixed and Byte mutators are special cases of the Uint mutator. The Ufixed mutator is initialized with the size of the integer part and the size of the fractional part. When mutating the value is first converted to an unsigned integer, mutated and then converted back to a fixed point number by dividing it with the fractional part size. The Byte mutator is an alias for the Uint mutator with a size of 8 bits.
 
-The Byte mutator is an alias for the Uint mutator with a size of 8 bits.
-
-\subsection*{String, Array Dynamic and Array Static Mutators}
+\paragraph{String, Array Dynamic and Array Static.}
 The String mutator and the dynamic length Array mutator work similarly. They are seeded with an empty string or array. Then one of the following mutation strategies is randomly chosen:
 \begin{itemize}
     \item add - Adds a random value to the string or array at a random position.
@@ -155,15 +153,17 @@ The String mutator and the dynamic length Array mutator work similarly. They are
     \item flip - Replaces a random value in the string or array with a random value.
 \end{itemize}
 
-The difference between the two that the array mutator also initializes a mutator for the type of the array.
+The difference between the two is that the array mutator also initializes a mutator for the type of the array.
 This mutator is used to generate the random values to be added by mutating the seed or when flipping a value by mutating the value at the corresponding position.
-
 The static length Array mutator is identical to the dynamic length Array mutator, except that it can only use the flip element mutation strategy.
 Therefore, not changing the size of the array.
 
-\subsection*{Tuple Mutator}
+\paragraph{Tuple.}
+For the tuple mutator, we initialize a mutator according to each type in the tuple.
+When mutating the tuple, we mutate each element of the tuple with the corresponding mutator.
+The seed value is a tuple of the seed values of the mutators.
 
-\subsection*{Account Mutator}
+\paragraph{Account.}
 The account mutator is needed not only to generate an account as an argument for an application call but also to generate the account which will be executing the call.
 This mutator is initialized with a list of funded accounts.
 Each account having a balance of 200 Algos.
@@ -173,7 +173,7 @@ This means that there is a 66\% chance that the account will stay the same and a
 The reason for this is that we do not want the account to change too often.
 This insures that some calls will be executed from the current before switching to another account.
 
-\subsection*{Payment Mutator}
+\paragraph{Payment.}
 The payment mutator is used to generate payment objects for method calls which require a payment.
 The payment object contains only the amount of Algos to be transferred.
 These objects are then transformed into a payment transaction and grouped with the application call.
@@ -185,7 +185,13 @@ When one of the accounts has less than 200 Algos, we fund the account with an ad
 This way our transaction does not fail due to insufficient funds.
 
 
-\subsection*{Method Mutator}
+\paragraph{Method Mutator.}
+The method mutator is initialized by passing an \ac{ABI} method.
+Similar to the tuple mutator, we initialize a mutator for each argument of the method.
+The mutating strategy differs from the tuple mutator.
+We first generate a random number from 1 to the number of arguments of the method which will be the number of arguments that we mutate.
+Then we use this number to sample the indices of the arguments that we will mutate.
+For the sampled indices, we mutate the argument with the respective mutator.
 
 
 \subsection*{Scheduler}
