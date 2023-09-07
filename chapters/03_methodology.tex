@@ -113,6 +113,10 @@ The fuzzer only executes noop applications calls.
 In the future, we could extend our tool to also randomly execute special calls.
 
 \subsection*{Architecture}
+The architecture of our solution is shown in Figure \ref{fig:algofuzz-architecture}.
+We extended the generic architecture in Figure \ref{fig:generic-fuzzer-architecture} by adding multiple ways to guide the fuzzing process through our different drivers which are passed on to the \texttt{ContractFuzzer}.
+Aside from that, we use mutations for our input generation. Since we have to support multiple different data types, the base Mutator is shown as an \texttt{Interface} which will be implemented by specific Mutator classes.
+In Section \ref{section:implementation} we will go over the implementation details of the different modules.
 
 \begin{figure}[htbp]
     \centering
@@ -120,7 +124,7 @@ In the future, we could extend our tool to also randomly execute special calls.
     \caption{Architecture of AlgoFuzz}\label{fig:algofuzz-architecture}
 \end{figure}
 
-\section{Implementation}
+\section{Implementation} \label{section:implementation}
 
 \subsection*{Mutators} \label{section:mutators}
 In this section we will go through the mutators and the heuristics that we implemented for our fuzzer.
