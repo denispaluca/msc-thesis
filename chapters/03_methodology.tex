@@ -284,19 +284,61 @@ The shrinking process is not implemented in our fuzzer, but it is a possible ext
 The combined driver is a combination of the coverage and state driver.
 When we use this driver, input is considered interesting if it produces a new transition or a new coverage path.
 We combined the drivers by introducing a coefficient that denotes the weight of the state driver.
-The weight of the coverage driver is then $1 - \text{state driver weight}$.
 This coefficient is then passed to the schedule, which uses it to weigh the probability of choosing interesting inputs from the population with the following formula:
-\[\text{weighted freq} = \text{state weight} * \text{transaction freq} + \text{coverage weight} * \text{path freq}\]
+
+\begin{figure}[htbp]
+    \centering
+    \[ w(s) = w_s * t(s) + w_c * p(s) \]
+    \begin{tabular}{@{}>{$}l<{$}l@{}}
+        s    & seed                                     \\
+        w_s  & state weight                             \\
+        w_c  & coverage weight (1 - $w_s$)              \\
+        t(s) & frequency of transition traversed by $s$ \\
+        p(s) & frequency of path traversed by $s$       \\
+        w(s) & weighted frequency of $s$                \\
+    \end{tabular}
+\end{figure}
+
 Form our experiments, we found that using a coefficient of 0.5 works best for this driver.
 With this coefficient, the state driver and the coverage driver are equally important.
 
 
-\subsection*{Scheduler}
+\subsection*{Schedule}
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/architecture-schedule-square.png}
     \caption{AlgoFuzz architecture with schedule highlighted.}\label{fig:architecture-schedule}
 \end{figure}
+
+The schedule of AlgoFuzz is implemented through an exponential power schedule similar to the one proposed by AFLFast \cite{bohme_coverage-based_2016}.
+This schedule assigns high energy to inputs that traverse paths or transitions that have been less frequently traversed.
+How often a path or transition has been traversed is stored in dictionaries, one for the path frequency and one for the transition frequency.
+Every time an input is executed the frequency of the path and transition that it traversed is incremented.
+The keys of the dictionaries are the hashes of the paths and transitions.
+As mentioned above, the schedule uses the weighted frequency of the input to determine the energy of the input.
+The energy is calculated with the following formula:
+
+\begin{figure}[htbp]
+    \centering
+    \[e(s) = \dfrac{1}{w(s) ^ \alpha}\]
+    \begin{tabular}{@{}>{$}l<{$}l@{}}
+        s      & seed                      \\
+        w(s)   & weighted frequency of $s$ \\
+        \alpha & schedule exponent         \\
+        e(s)   & energy of $s$             \\
+    \end{tabular}
+\end{figure}
+
+The schedule exponent is a parameter that can be configured for the schedule.
+It determines by how much we prioritize less traversed paths and transitions.
+For AlgoFuzz this value is hard coded to 5, this way we emphasize newer inputs more aggressively.
+In the future, this could be a configurable value for the fuzzer or it could be dynamically changed during the fuzzing process.
+
+After calculating the energy of each input, the schedule uses it to determine the probability of choosing an input.
+The probability of each input is the normalized energy, which is calculated by dividing the energy of the input by the sum of all energies.
+
+
 
 
 \section{Important Metrics}
