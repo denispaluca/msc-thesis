@@ -114,6 +114,12 @@ In the future, we could extend our tool to also randomly execute special calls.
 
 \subsection*{Architecture}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/algofuzz-architecture-simple.png}
+    \caption{Architecture of AlgoFuzz}\label{fig:algofuzz-architecture}
+\end{figure}
+
 \section{Implementation}
 
 \subsection*{Mutators} \label{section:mutators}
@@ -125,6 +131,13 @@ A mutator has two important methods:
     \item \texttt{seed}: This method seeds the input with a value.
           Currently, we have chosen simple initial values for all different types.
 \end{itemize}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/architecture-mutator-square.png}
+    \caption{AlgoFuzz architecture with mutator highlighted.}\label{fig:architecture-mutator}
+\end{figure}
 
 \paragraph{Boolean.} This mutator generates random boolean values. The values are all seeded with \texttt{False}.
 The mutation strategy is simply to flip the value of the boolean.
@@ -194,9 +207,17 @@ Then we use this number to sample the indices of the arguments that we will muta
 For the sampled indices, we mutate the argument with the respective mutator.
 
 
-\subsection*{Scheduler}
-
 \subsection*{Partial and Total Fuzzing}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/architecture-fuzzer-square.png}
+    \caption{AlgoFuzz architecture with two types of fuzzers.}\label{fig:architecture-fuzzers}
+\end{figure}
+
+
+
 For most smart contracts, the code of different methods is relatively independent to each other.
 Meaning the vast majority of methods are small, self-contained, and they rarely call common subroutines.
 From this point of view each method of the contract can be seen as a separate program.
@@ -229,7 +250,14 @@ Most fuzzers use different metrics to determine which inputs are interesting and
 We call these metrics the \textit{drivers} of the fuzzer.
 In this section, we will discuss the different drivers that we chose for our fuzzer.
 
-\subsection*{Coverage Driver}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/architecture-driver-square.png}
+    \caption{AlgoFuzz architecture with driver highlighted.}\label{fig:architecture-driver}
+\end{figure}
+
+\paragraph{Coverage Driver.}
 As mentioned most fuzzers use some sort of coverage information to guide the fuzzing process.
 This is also the case for our fuzzer.
 The coverage information is retrieved by running the application call in \texttt{dryrun} mode.
@@ -239,7 +267,7 @@ The coverage information of a call is processed by creating a set of all the lin
 This set is called a coverage path.
 If an input produces a new coverage path, it is considered interesting.
 
-\subsection*{State Driver}
+\paragraph{State Driver.}
 Since our fuzzer relies on property tests on the state of the contract to detect bugs, it makes sense to have a fuzzer which optimizes for generating inputs that produce different states.
 To use the state as a driver, we retrieve the global state of the application and the local states of the accounts in the account mutator.
 We then hash this information to create a unique identifier for the state and not store the entire state.
@@ -251,7 +279,7 @@ It could do this by going through the transition graph and finding the shortest 
 In Echidna this process is called \textit{shrinking}.
 The shrinking process is not implemented in our fuzzer, but it is a possible extension.
 
-\subsection*{Combined Driver}
+\paragraph{Combined Driver.}
 The combined driver is a combination of the coverage and state driver.
 When we use this driver, input is considered interesting if it produces a new transition or a new coverage path.
 We combined the drivers by introducing a coefficient that denotes the weight of the state driver.
@@ -260,6 +288,15 @@ This coefficient is then passed to the schedule, which uses it to weigh the prob
 \[\text{weighted freq} = \text{state weight} * \text{transaction freq} + \text{coverage weight} * \text{path freq}\]
 Form our experiments, we found that using a coefficient of 0.5 works best for this driver.
 With this coefficient, the state driver and the coverage driver are equally important.
+
+
+\subsection*{Scheduler}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/architecture-schedule-square.png}
+    \caption{AlgoFuzz architecture with schedule highlighted.}\label{fig:architecture-schedule}
+\end{figure}
+
 
 \section{Important Metrics}
 In this section, we will discuss the different metrics that we used to evaluate our fuzzer.
