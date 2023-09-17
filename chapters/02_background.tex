@@ -7,7 +7,10 @@ This chapter introduces the technical background and related work for the thesis
 \section{Blockchain}
 Bitcoin was first introduced in 2008 by an anonymous person or group of people under the name of Satoshi Nakamoto \cite{nakamoto_bitcoin_2008}. The purpose of the project was to facilitate online payments without having to go through a financial institution. Previous solutions were hindered by the double-spend problem, where a user can counterfeit the currency if there is no trusted central authority keeping track of the different transactions and the balances. Bitcoin solved this problem with a peer-to-peer network.
 In this network the nodes keep track of all the transactions that have been committed in a public ledger.
-These transactions are added into a block which are then chained together through cryptographic hashes. The nodes in the network keep track of the longest chain of blocks and accept the longest chain as the valid one. This is called the \ac{PoW} consensus mechanism. These nodes are incentivized to keep the network secure by receiving a reward in the form of newly minted bitcoins for every block they add to the chain. This process is called \textit{mining}. The \ac{PoW} consensus is computationally expensive, which makes it difficult for an attacker to create a longer chain than the honest nodes. The attacker would have to have more computational power than the rest of the network combined.
+First the transactions are broadcasted to the network and then they are collected in a pool called the \emph{mempool}.
+These transactions are then added into blocks which are chained together through cryptographic hashes.
+This way, the ledger is immutable meaning that once a transaction is added to the ledger it cannot be removed or modified.
+The nodes in the network keep track of the longest chain of blocks and accept the longest chain as the valid one. This is called the \ac{PoW} consensus mechanism. These nodes are incentivized to keep the network secure by receiving a reward in the form of newly minted bitcoins for every block they add to the chain. This process is called \textit{mining} and the participants of this process are called \emph{miners}. The \ac{PoW} consensus is computationally expensive, which makes it difficult for an attacker to create a longer chain than the honest nodes. The attacker would have to have more computational power than the rest of the network combined.
 This is known as the 51\% attack. The Bitcoin network has been running for over 10 years and has never been compromised.
 There are several limitations to this network, such as low transaction throughput and high energy consumption of the \ac{PoW} consensus mechanism.
 These limitations have led to the development of new blockchain networks with different consensus mechanisms.
@@ -20,7 +23,10 @@ Since the Ethereum network is completely permissionless (meaning anyone can part
 
 The model of the Ethereum smart contracts is simple and since Ethereum was the first blockchain network that supported smart contracts many succeeding networks are more or less similar. For this reason, it is interesting to mention how Ethereum smart contracts work and later to mention how Algorand Smart Contracts differ. Each smart contract has its state (the data of the contract), functions (the code of the contract) and an Ethereum account connected to this contract. The state of the contract is stored in the Ethereum blockchain and is accessible for anyone to read. The account of the contract is not controlled by a user but only by the code of the corresponding contract. The functions of the contract are the code that is executed when the contract is called. These functions have access not only to the state of the contract, but also to the state of the blockchain. This means that the functions can read the state of other contracts and even call their functions.
 When a function is marked with \texttt{payable} it indicates that the function can receive ether.
-Also, the function has access to the address of the caller and the amount of ether that the caller may have sent. When a function is called, it is executed by all the nodes in the network. This means that the function is executed in a deterministic way and the result is the same for all the nodes. Because of this, the execution of the function can be expensive for the nodes. Therefore, the caller of the function has to pay a fee for the execution. This fee is calculated based on the amount of computational resources that the function consumes. This means that the more complex the function is, the more expensive it is to execute. The fee is paid in ether and is collected by the nodes that execute the function as an incentive. The fee is also used to prevent denial-of-service attacks, where a malicious user would try to execute a function that consumes a lot of resources and thus make the network unusable.
+Also, the function has access to the address of the caller and the amount of ether that the caller may have sent. When a function is called, it is executed by all the nodes in the network. This means that the function is executed in a deterministic way and the result is the same for all the nodes. Because of this, the execution of the function can be expensive for the nodes.
+Therefore, the caller of the function has to pay a fee for the execution. This fee is calculated based on the amount of computational resources that the function consumes. This means that the more complex the function is, the more expensive it is to execute.
+The computational effort is measured in \emph{gas} and the fees, called \emph{gas fees}, are calculated by multiplying the gas with the gas price.
+The fee is paid in ether and is collected by the nodes that execute the function as an incentive. The fee is also used to prevent denial-of-service attacks, where a malicious user would try to execute a function that consumes a lot of resources and thus make the network unusable.
 
 Allowing anyone to deploy and run arbitrary code on the network has led to the creation of a large ecosystem of \acp{dApp} \cite{wu_empirical_2019}. These \acp{dApp} are similar to traditional web applications, but they are not controlled by a single entity. Instead, they are controlled by the code that is deployed on the network. Also, once deployed the code of these smart contracts cannot be changed due to the immutability property of the blockchain. This is a double-edged sword, as it means that no code fixes can be applied if there is a bug or a security vulnerability. Usually smart contracts control large sums of digital currencies or digital assets, which makes them a very attractive target for attackers. For these two reasons combined, it is of utmost importance to ensure the security of the smart contract before they are deployed.
 
@@ -36,7 +42,9 @@ Smart contracts have a lot of idiosyncrasies that set them apart from usual comp
     \item \textbf{Timestamp Dependence} - The execution environment of the smart contract is managed by the miner of the block. If some logic of the contract depends on the timestamp variable, the miner can manipulate this variable to his advantage.
     \item \textbf{Front-running} - Every transaction on blockchain networks first becomes visible in the mempool prior to being executed. This visibility enables those on the network to view and act on a transaction before it is added to a block. Such exposure can be exploited by malicious actors to manipulate how a transaction is carried out.
     \item \textbf{Resource Limit Vulnerabilities} - The execution of a function in most blockchains will incur a cost to the caller. If a function is too complex, the costs of executing it might exceed certain limitations of the network or the funds of the contract. This can lead to certain functions of the contract being unusable after a while. An example of this would be calling a function that pays out funds to users from a large array. If the users in the array are too many, the function might not be able to pay out all the users due to the cost of the function exceeding the funds of the contract.
-    \item \textbf{Simple Logical Errors} - Although most smart contract are thoroughly scrutinized by the community, still a significant number of vulnerabilities are caused by simple logical errors. These errors cannot be avoided by adding features to your blockchain, as they are inherent in all computer programs written by humans.
+    \item \textbf{Simple Logical Errors} - Although most smart contract are thoroughly scrutinized by the community, still a significant number of vulnerabilities are caused by simple logical errors.
+          Meaning errors that are specific to the logic of the contract and not common to all smart contracts.
+          These errors cannot be avoided by adding features to your blockchain, as they are inherent in all computer programs written by humans.
 \end{itemize}
 
 To deal with these vulnerabilities different tools have been proposed such as static analysis tools, symbolic execution tools and fuzzers, which we will discuss more of on section \ref{section:fuzzing}.
@@ -44,7 +52,11 @@ To deal with these vulnerabilities different tools have been proposed such as st
 In the next section we will explore the Algorand blockchain network, its smart contracts, how it handles the previously mentioned vulnerabilities and which vulnerabilities are relevant to it.
 
 \section{Algorand} \label{section:algorand}
-Algorand was initially proposed in 2017 by Chen et al. \cite{chen_algorand_2017}. It sought to improve on previous networks by solving the scalability trilemma, which states that a blockchain network can only have two of the following three properties: security, scalability and decentralization. This is due to the fact that previous networks relied on a consensus mechanism that was computationally expensive and thus limited the transaction throughput of the network. Algorand solved this problem by introducing a new consensus mechanism called \ac{PPoS}. This consensus mechanism has the advantage of being computationally inexpensive and thus allows the network to scale. The network is permissionless, which means that anyone can participate in the consensus. The consensus mechanism is also Byzantine fault tolerant, meaning the network can still function even if up to 1/3 of the nodes in the network are malicious. According to the authors, the possibility of a fork in the network is 10\textsuperscript{-18}, meaning the network practically achieves instant finality of a transaction, from the moment it enters the ledger. This is different from Bitcoin where the finality of a transaction is probabilistic and it increases as more blocks are added to the chain. For Bitcoin finality is usually considered reached after 6 confirmations (meaning 6 blocks after the one containing the interesting transaction). At the time of this writing, new blocks are produced at an average of 3.5 seconds and can hold up to 25000 transactions, which results in a transaction throughput of 7150 \ac{TPS} \cite{noauthor_algorand_nodate-3}.
+Algorand was initially proposed in 2017 by Chen et al. \cite{chen_algorand_2017}. It sought to improve on previous networks by solving the scalability trilemma, which states that a blockchain network can only have two of the following three properties: security, scalability and decentralization. This is due to the fact that previous networks relied on a consensus mechanism that was computationally expensive and thus limited the transaction throughput of the network. Algorand solved this problem by introducing a new consensus mechanism called \ac{PPoS}.
+The \ac{PPoS} consensus algorithm randomly selects a small set of validators for each block from a large pool of participants.
+These validators propose and vote on the next block, with the weight of their vote proportional to the amount of cryptocurrency they have staked.
+To ensure unpredictability and fairness, a cryptographic lottery determines the validators.
+This consensus mechanism has the advantage of being computationally inexpensive and thus allows the network to scale. The network is permissionless, which means that anyone can participate in the consensus. The consensus mechanism is also Byzantine fault tolerant, meaning the network can still function even if up to 1/3 of the nodes in the network are malicious. According to the authors, the possibility of a fork in the network is 10\textsuperscript{-18}, meaning the network practically achieves instant finality of a transaction, from the moment it enters the ledger. This is different from Bitcoin where the finality of a transaction is probabilistic and it increases as more blocks are added to the chain. For Bitcoin finality is usually considered reached after 6 confirmations (meaning 6 blocks after the one containing the interesting transaction). At the time of this writing, new blocks are produced at an average of 3.5 seconds and can hold up to 25000 transactions, which results in a transaction throughput of 7150 \ac{TPS} \cite{noauthor_algorand_nodate-3}.
 
 The native currency of the Algorand network is called Algo, and it has a maximum supply of 10 Billion Algos. The smallest unit of Algo is called a microAlgo and it is equal to 0.000001 Algo.
 Algo is used to pay the transaction fees of the network and also to participate in the consensus. Different from the Ethereum gas fee, Algorand fees are only paid if the transaction is included in a block. Transaction fees are calculated based on congestion of the network, but because of the high \ac{TPS} most transactions can use the minimum base fee of 0.001 Algos. In addition to the fees, Algorand has also \ac{MBR} for its accounts. The \ac{MBR} acts as a deposit to rent space on the blockchain. Every time the amount of stored data on the blockchain increases, the \ac{MBR} of the associated account also increases. When the space is liberated by deleting data, the \ac{MBR} is also decreased. All accounts have a base \ac{MBR} of 0.1 Algo.
@@ -134,7 +146,7 @@ From this work, the first fuzzing tool was built to allow other researchers to c
 
 The main idea behind fuzzing is providing random input for the program under test and monitoring its behavior.
 Algorithm \ref{alg:fuzz} shows a generic fuzzing algorithm, which is used in when modeling fuzzers \cite{manes_art_2019}.
-\begin{algorithm}
+\begin{algorithm}[htbp]
     \caption{Generic fuzzing algorithm}\label{alg:fuzz}
     \begin{algorithmic}
         \item \textbf{Input: } $conf, t_{limit}$
@@ -154,9 +166,12 @@ Algorithm \ref{alg:fuzz} shows a generic fuzzing algorithm, which is used in whe
 The fuzzing process is usually represented by the following steps:
 \begin{enumerate}
     \item Input is generated given a fuzzing configuration.
+          \textbf{InputGen} is the function that generates the input.
     \item The generated input is evaluated against the program, given a certain bug oracle.
+          \textbf{InputEval} is the function that evaluates the input.
     \item The evaluation results are used to improve the fuzzing configuration.
-    \item The process is repeated until the time limit is reached or the bug oracle is satisfied.
+          This is done by the \textbf{ConfUpdate} function.
+    \item The process is repeated until the time limit is reached or the \textbf{Continue} function decides based on the results that the process should stop.
 \end{enumerate}
 
 
@@ -169,9 +184,9 @@ This measure of how interesting an input is, is often called the \textit{energy}
 To facilitate this, the architecture of a fuzzer can be split into the following parts \cite{zeller_greybox_2023}:
 \begin{itemize}
     \item \textbf{Fuzzer} - Runner of the main fuzzing loop.
-    \item \textbf{Schedule} - Defines how the fuzzing should be distributed across the population.
-    \item \textbf{Input Generator} - Generates the input for the fuzzing process. There are many different types of input generators, the most popular ones being mutation-based. In Figure \ref{fig:generic-fuzzer-architecture} we can see a Mutator as the chosen input generator.
-    \item \textbf{Seed} - This represents an interesting input that contains that data, the energy and other information about the particular input.
+    \item \textbf{Schedule} - Decides which of inputs from the population of interesting inputs should be used by the fuzzer in the next iteration.
+    \item \textbf{Input Generator} - Generates the input for the fuzzing process. There are many different types of input generators, the most popular ones being mutation-based, where old inputs are slightly changed to create new inputs. In Figure \ref{fig:generic-fuzzer-architecture} we can see a Mutator as the chosen input generator.
+    \item \textbf{Seed} - This represents an interesting input that contains that data, the energy and other information (such as coverage path) about the particular input.
 \end{itemize}
 
 \begin{figure}[htbp]
@@ -188,23 +203,19 @@ In this section we will explore the existing work in the field of smart contract
 \subsection*{Smart Contract Fuzzing}
 A number of fuzzers have been developed for smart contracts.
 The vast majority of them target Ethereum smart contracts.
-Here is a brief overview of the most notable ones:
-\begin{itemize}
-    \item \textbf{Echidna}: One of the most prominent fuzzers for Ethereum smart contracts is Echidna. Developed by the company Trail of Bits, Echidna is a property-based fuzzer that tests the contract's invariants using random transactions.
-          Echidna has been employed in numerous security audits and has proven to be effective in uncovering bugs in Ethereum contracts \cite{grieco_echidna_2020,noauthor_echidna_nodate}.
-          It makes use of an EVM implementation written in Haskell called \textit{hevm} \cite{noauthor_haskell_nodate}, which allows it to run the contracts without the need of a private Ethereum network.
-
-    \item \textbf{ContractFuzzer}: Introduced in 2018, it stands as one of the earliest examples of fuzzing applied to smart contracts \cite{jiang_contractfuzzer_2018}.
-          The fuzzer uses static analysis in combination with fuzzing to generate inputs that are more likely to trigger bugs.
-          Different from Echidna, it uses a private Ethereum network to run the contracts.
-          One big contribution of this work is one of the first introductions of specific bug oracles for Ethereum smart contracts.
-    \item \textbf{Harvey}: One of the few closed sourced fuzzing engines \cite{wustholz_harvey_2020}.
-          It is among the most widely used fuzzers in the industry.
-          The company Consensys has used it to build their smart contract fuzzing platform called Diligence Fuzzing \cite{consensys_ag_lets_nodate}.
-    \item \textbf{Notable non ethereum fuzzers}: There are several other fuzzers like HFContractFuzzer \cite{ding_hfcontractfuzzer_2021}, EOSFuzzer \cite{huang_eosfuzzer_2021}, and AntFuzzer \cite{zhou_antfuzzer_2022}.
-          These fuzzers target other smart contract platforms like EOS \cite{noauthor_home_nodate} and Hyperledger Fabric \cite{noauthor_hyperledger_nodate}.
-
-\end{itemize}
+One of the most prominent fuzzers for Ethereum smart contracts is Echidna.
+Developed by the company Trail of Bits, Echidna is a property-based coverage-guided fuzzer that tests the contract's invariants using random transactions.
+Echidna has been employed in numerous security audits and has proven to be effective in uncovering bugs in Ethereum contracts \cite{grieco_echidna_2020,noauthor_echidna_nodate}.
+It makes use of an EVM implementation written in Haskell called \textit{hevm} \cite{noauthor_haskell_nodate}, which allows it to run the contracts without the need of a private Ethereum network.
+\emph{ContractFuzzer} was introduced in 2018, it stands as one of the earliest examples of fuzzing applied to smart contracts \cite{jiang_contractfuzzer_2018}.
+The fuzzer uses static analysis in combination with fuzzing to generate inputs that are more likely to trigger bugs.
+Different from Echidna, it uses a private Ethereum network to run the contracts.
+One big contribution of this work is one of the first introductions of specific bug oracles for Ethereum smart contracts.
+\emph{Harvey} is one of the few closed sourced fuzzing engines \cite{wustholz_harvey_2020}.
+It is among the most widely used fuzzers in the industry.
+The company Consensys has used it to build their smart contract fuzzing platform called Diligence Fuzzing \cite{consensys_ag_lets_nodate}.
+There are several other fuzzers like \emph{HFContractFuzzer} \cite{ding_hfcontractfuzzer_2021}, \emph{EOSFuzzer} \cite{huang_eosfuzzer_2021}, and \emph{AntFuzzer} \cite{zhou_antfuzzer_2022}.
+These fuzzers target other smart contract platforms like EOS \cite{noauthor_home_nodate} and Hyperledger Fabric \cite{noauthor_hyperledger_nodate}.
 
 % The most common approach to evaluating the above-mentioned fuzzers was to run them on a set of smart contracts.
 % The set of smart contract used is different for each fuzzer.
@@ -227,7 +238,9 @@ Algorand, while not as extensively explored as Ethereum in terms of security too
 \end{itemize}
 
 \subsection*{Research Gap}
-Despite the efforts and tools available for ensuring the security of Algorand smart contracts, there exists a gap in the domain of fuzzing.
+Despite the efforts and tools available for ensuring the security of Algorand smart contracts, there are challenges with the tools currently in use.
+For instance, static analysis tools are limited in their ability to detect vulnerabilities, as they often overlook vulnerabilities or produce false positives.
+This underscores the need for a complementary dynamic analysis tool such as a fuzzer.
 While Ethereum has seen a multitude of fuzzers, Algorand lacks a dedicated fuzzer tailored for its unique smart contract architecture and the \ac{TEAL} scripting language.
 In the GitHub repository of Algorand, there is a fuzzer called \textit{TealFuzz}, but the project is currently abandoned, with 17 commits in total and the last commit being made in 2020 \cite{algorand_algorandtealfuzz_nodate}.
 
