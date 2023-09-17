@@ -163,7 +163,8 @@ From this work, the first fuzzing tool was built to allow other researchers to c
 
 The main idea behind fuzzing is providing random input for the program under test and monitoring its behavior.
 Algorithm \ref{alg:fuzz} shows a generic fuzzing algorithm, which is used in when modeling fuzzers \cite{manes_art_2019}.
-\begin{algorithm}[htbp]
+
+\begin{algorithm}[H]
     \caption{Generic fuzzing algorithm}\label{alg:fuzz}
     \begin{algorithmic}
         \item \textbf{Input: } $conf, t_{limit}$
@@ -178,7 +179,6 @@ Algorithm \ref{alg:fuzz} shows a generic fuzzing algorithm, which is used in whe
         \EndWhile
     \end{algorithmic}
 \end{algorithm}
-\clearpage
 
 The fuzzing process is usually represented by the following steps:
 \begin{enumerate}
