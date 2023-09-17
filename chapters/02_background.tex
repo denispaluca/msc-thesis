@@ -74,6 +74,23 @@ The nodes in the network execute the smart signature and if the execution is suc
 On the Algorand network smart contracts are written with the \ac{TEAL}, which is a Turing-complete assembly-like language that is interpreted by the \ac{AVM} \cite{noauthor_introduction_nodate}.
 Since \ac{TEAL} is a low-level language, it is difficult for developers to write smart contracts directly in it.
 For this reason, different high-level solutions that compile to \ac{TEAL} have been developed, such as Reach \cite{noauthor_reach_nodate}, PyTeal \cite{noauthor_pyteal_nodate}, Beaker \cite{noauthor_beaker_nodate} and TEALScript \cite{noauthor_algorandfoundationtealscript_nodate}.
+
+
+\begin{figure}[!htbp]
+    \centering
+    \subfloat[PyTeal][PyTeal]{
+        \includegraphics[width=0.40\textwidth]{figures/pyteal-3.png}
+        \label{fig:pyteal}
+    }
+    \hfill
+    \subfloat[TEAL][TEAL]{
+        \includegraphics[width=0.40\textwidth]{figures/teal-2.png}
+        \label{fig:teal}
+    }
+    \caption{Example PyTeal code compiled to \ac{TEAL}.}
+    \label{fig:pyteal-teal}
+\end{figure}
+
 The \ac{TEAL} contracts can be deployed and remotely called from any node in the Algorand blockchain. An on-chain instantiation of an Algorand smart contract is called an \textit{Application}. Special transactions, named \textit{Application Call transactions}, are required to trigger the different functions of the application. Similar to Ethereum smart contracts, an application can modify state, access on-chain values and execute transactions. Each application has an associated account, that only the application can control.
 
 An application can store state in three different ways \cite{noauthor_contract_nodate}:
