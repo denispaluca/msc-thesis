@@ -421,9 +421,78 @@ For this case study, we tried all the different combinations of drivers and fuzz
 This gives us in total 6 different fuzzers: partial fuzzer with coverage driver, partial fuzzer with state driver, partial fuzzer with combined driver, total fuzzer with coverage driver, total fuzzer with state driver, and total fuzzer with combined driver.
 We also tested the total and partial fuzzer with the combined driver using different state coefficients (or the weight of the state driver).
 For this we used the weights from 0.1 to 0.9 with a step of 0.1.
+The weights of 0 and 1 are not included since that would be almost the same as using coverage or state driver respectively.
 
 The case study was conducted on a local machine with an Intel Core i7-8550U CPU and 16GB of RAM.
 Each fuzzer was run 5 times with a timeout of 2 minutes.
 The averages of the runs were gathered.
 
 \subsection*{Results}
+First we ran the experiment with the different coefficients to find out which one works best. We focused on two key questions:
+\begin{itemize}
+    \item Which coefficient leads to more state being covered?
+    \item Which coefficient produces the most unique state transitions?
+\end{itemize}
+
+To answer the first question we just looked at the percentage of lines covered which is shown in Figure \ref{fig:case-study-coeff}.
+From which we can clearly see that the highest values are concentrated at the coefficient of 0.5.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{charts/coef-cov.pdf}
+    \caption{Coverage results with different coefficients.}\label{fig:case-study-coeff}
+\end{figure}
+
+
+For the second question we looked at the number of unique state transitions, which is shown in Figure \ref{fig:coef-trans}.
+Here it is less clear which coefficient works best.
+For the partial fuzzer, the number of transitions goes down as the state coefficient increases.
+This seems counterintuitive at first, but it makes sense when see that the number of calls executed also goes down.
+When we calculate the ratio of transitions to calls executed, we see that it is mostly staying the same throughout the different coefficients (at around 22\% for the partial fuzzer and 11\% for the total fuzzer).
+In this case it is harder to say which coefficient works best, so we decided to use the coefficient of 0.5 based on the coverage results.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{charts/coef-trans.pdf}
+    \caption{State transitions with different coefficients.}\label{fig:coef-trans}
+\end{figure}
+
+With the coefficients chosen, we ran the experiment again to compare the different fuzzers.
+The results for rejected calls and coverage are shown in Figure \ref{fig:rej-cov}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{charts/rej-cov.pdf}
+    \caption{State transitions with different coefficients.}\label{fig:rej-cov}
+\end{figure}
+
+From the results we can see that the total fuzzer with the state driver has the lowest ratio of rejected calls by far.
+This means that it is the most efficient at generating inputs that are accepted by the contract.
+Aside from this, we can see that the partial fuzzer has higher coverage than the total fuzzer across all drivers.
+And, as expected, for the total fuzzer the coverage driver has the highest coverage.
+
+It was also interesting to see the amount of unique paths and state transitions that were covered by the different fuzzers, show
+
+
+\begin{figure}[!htbp]
+    \centering
+    \subfloat[PyTeal][Unique Paths.]{
+        \includegraphics[width=0.47\textwidth]{charts/paths.pdf}
+        \label{fig:paths}
+    }
+    \hfill
+    \subfloat[TEAL][Unique Transitions.]{
+        \includegraphics[width=0.47\textwidth]{charts/trans.pdf}
+        \label{fig:trans}
+    }
+    \caption{Unique coverage paths and state transitions discovered.}
+    \label{fig:path-trans}
+\end{figure}
+
+Different from the coverage results, the total fuzzer is not too far behind in terms of the amount of unique paths discovered.
+For the state transitions, we see the partial fuzzer perform more or less the same regardless of the driver, at around 1200 transitions.
+In contrast, the total fuzzer underperforms for the coverage and combined drivers at around 430 transitions.
+The total fuzzer with the state driver show outstanding results with 2739.2 transitions discovered on average.
+This goes hand in hand with the rejected calls results, since the state driver will most likely prioritize inputs which slightly change the state of the contract and therefore are safer.
+
+From these results we can conclude that our fuzzer with the different configurations is able to cover a large amount of the code and state space of the contract.
