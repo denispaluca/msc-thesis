@@ -365,7 +365,7 @@ In the future, this could be a configurable value for the fuzzer or it could be 
 After calculating the energy of each input, the schedule uses it to determine the probability of choosing an input.
 The probability of each input is the normalized energy, which is calculated by dividing the energy of the input by the sum of all energies.
 
-\section{Important Metrics}
+\section{Important Runtime information}
 In this section, we will discuss the different metrics that we used to evaluate our fuzzer.
 
 \paragraph{Number of calls executed} Shows us how efficient the fuzzer is at generating inputs and calling the application.
@@ -390,5 +390,40 @@ This is because a path can be a subset of another path.
 The more transitions are produced, the closer the fuzzer can be to finding a state that would invalidate the property test.
 
 \section{Case Study: AlgoTether}
-In this section, we will go through the process of fuzzing a real-world Algorand smart contract.
-This small case study exemplifies
+Before we go into the evaluation of our fuzzer, we will go through a case study of a smart contract that we wrote for this research.
+The contract is called AlgoTether and it is a simple contract that allows users to mint and transfer tokens.
+AlgoTether is translated from the Solidity contract of the Tether Token \cite{etherscanio_tether_nodate}, which is a stablecoin that is pegged to the US dollar.
+
+The reason we decided to translate this contract is that there are no Algorand contracts that use the official \ac{ABI} and do not rely on box storage, which we do not support.
+This makes it hard to find contracts that are long enough to be interesting for our evaluation.
+
+\subsection*{Contract Features}
+This contract represents an ERC20 token \cite{noauthor_erc-20_nodate}.
+Each account has a balance of tokens that can be transferred to other accounts.
+An account can also allow other accounts to spend tokens on its behalf.
+In the Algorand version of the contract, we represent balances as local state in the account that owns the tokens.
+For allowances, we store in the local state of the account that owns the tokens, a mapping from the account that is allowed to spend tokens to the amount of tokens that it is allowed to spend.
+The key for the allowances is \texttt{allowance\_<spender>} where \texttt{spender} is the address of the account that is allowed to spend tokens.
+Since we are using local state we need to declare it before deploying how much space we will need.
+In our case, we will need only 3 local state values for the account, since we have at maximum 3 accounts.
+
+The contract is \emph{ownable} which means there is an owner account that has special privileges and can perform certain operations that other accounts cannot.
+The owner of the contract is the account that deployed the contract and it can be changed only by the current owner.
+
+The contract is also \emph{pausable}, meaning that the owner can pause the contract, which will prevent any transfers from happening.
+
+The contract also has a blacklist feature, which allows the owner to add accounts to a blacklist.
+Accounts on the blacklist cannot transfer tokens.
+The blacklisted accounts are stored on the global state of the contract, with the key \texttt{blacklist\_<acc>}.
+
+\subsection*{Setup}
+For this case study, we tried all the different combinations of drivers and fuzzers.
+This gives us in total 6 different fuzzers: partial fuzzer with coverage driver, partial fuzzer with state driver, partial fuzzer with combined driver, total fuzzer with coverage driver, total fuzzer with state driver, and total fuzzer with combined driver.
+We also tested the total and partial fuzzer with the combined driver using different state coefficients (or the weight of the state driver).
+For this we used the weights from 0.1 to 0.9 with a step of 0.1.
+
+The case study was conducted on a local machine with an Intel Core i7-8550U CPU and 16GB of RAM.
+Each fuzzer was run 5 times with a timeout of 2 minutes.
+The averages of the runs were gathered.
+
+\subsection*{Results}
