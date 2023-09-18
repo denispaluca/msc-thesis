@@ -136,6 +136,23 @@ In Section \ref{section:implementation} we will go over the implementation detai
     \caption{AlgoFuzz architecture with FuzzAppClient highlighted.}\label{fig:architecture-client}
 \end{figure}
 
+The first thing we had to do was find a way to interact with the local network.
+In the beginning, we used the Algorand Python \ac{SDK} \cite{noauthor_algorand_nodate-5} directly to make calls to the local network.
+This worked fine for the most part, but it required us to write a lot of code for generic operations when we wanted to interact with an application.
+For example, to make an application call we had to create a transaction, sign it, send it to the network, wait for the transaction to be confirmed, and then retrieve the result.
+Later we found out that Algokit provides a standard client for applications, called \texttt{ApplicationClient}, which encapsulates most of these operations, and it also works with \ac{TEAL} contracts.
+To make the client more suitable for our use case, we created a wrapper around it called \texttt{FuzzAppClient}.
+This wrapper adds the following functionality:
+\begin{itemize}
+    \item Gathering coverage information from every application call. This is done by making a \texttt{dryrun} call before the actual application call.
+    \item Preparing application call arguments such as payments, by creating the corresponding transactions.
+    \item Changing the account that is used to make the application call.
+    \item Opting in to the application all the accounts that are used for the fuzzing process.
+    \item Disassembling the \ac{TEAL} code of the contract and retrieving the total number of lines.
+          %\item Reporting assertion failures and differentiating them from other errors.
+\end{itemize}
+
+
 \subsection*{Mutators} \label{section:mutators}
 In this section we will go through the mutators and the heuristics that we implemented for our fuzzer.
 A mutator has two important methods:
