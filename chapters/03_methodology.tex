@@ -303,7 +303,7 @@ This is necessary since the state can be very large and storing it for each inpu
 One way of using this information to identify interesting inputs is by detecting if it produced a new state.
 This works fine, but we decided to consider transitions between states as interesting inputs.
 The reason for this is that in the future these transitions can be used to find the input sequence the produces a bug.
-It could do this by going through the transition graph and finding the shortest path between the initial state and the state that produces the bug.
+This can be done by going through the transition graph and finding the shortest path between the initial state and the state that produces the bug.
 In Echidna this process is called \textit{shrinking}.
 The shrinking process is not implemented in our fuzzer, but it is a possible extension.
 
@@ -311,24 +311,7 @@ The shrinking process is not implemented in our fuzzer, but it is a possible ext
 The combined driver is a combination of the coverage and state driver.
 When we use this driver, input is considered interesting if it produces a new transition or a new coverage path.
 We combined the drivers by introducing a coefficient that denotes the weight of the state driver.
-This coefficient is then passed to the schedule, which uses it to weigh the probability of choosing interesting inputs from the population with the following formula:
-
-\begin{figure}[htbp]
-    \centering
-    \[ w(s) = w_s * t(s) + w_c * p(s) \]
-    \begin{tabular}{@{}>{$}l<{$}l@{}}
-        s    & seed                                     \\
-        w_s  & state weight                             \\
-        w_c  & coverage weight (1 - $w_s$)              \\
-        t(s) & frequency of transition traversed by $s$ \\
-        p(s) & frequency of path traversed by $s$       \\
-        w(s) & weighted frequency of $s$                \\
-    \end{tabular}
-\end{figure}
-
-Form our experiments, we found that using a coefficient of 0.5 works best for this driver.
-With this coefficient, the state driver and the coverage driver are equally important.
-
+This coefficient is then passed to the schedule, which is discussed in the next section.
 
 \subsection*{Schedule}
 
@@ -343,17 +326,31 @@ This schedule assigns high energy to inputs that traverse paths or transitions t
 How often a path or transition has been traversed is stored in dictionaries, one for the path frequency and one for the transition frequency.
 Every time an input is executed the frequency of the path and transition that it traversed is incremented.
 The keys of the dictionaries are the hashes of the paths and transitions.
-As mentioned above, the schedule uses the weighted frequency of the input to determine the energy of the input.
-The energy is calculated with the following formula:
+As mentioned above, these frequencies are then used to first calculate the weighted frequency given the coefficient of the state.
+The formula for the weighted frequency is the following:
+\begin{figure}[htbp]
+    \centering
+    \[ w(s) = w_s * t(s) + w_c * p(s) \]
+    \begin{tabular}{@{}>{$}l<{$}l@{}}
+        s    & seed                                     \\
+        w_s  & state weight                             \\
+        w_c  & coverage weight (1 - $w_s$)              \\
+        t(s) & frequency of transition traversed by $s$ \\
+        p(s) & frequency of path traversed by $s$       \\
+        w(s) & weighted frequency of $s$                \\
+    \end{tabular}
+\end{figure}
+
+Then the energy is calculated with the following formula:
 
 \begin{figure}[htbp]
     \centering
     \[e(s) = \dfrac{1}{w(s) ^ \alpha}\]
     \begin{tabular}{@{}>{$}l<{$}l@{}}
-        s      & seed                      \\
-        w(s)   & weighted frequency of $s$ \\
-        \alpha & schedule exponent         \\
-        e(s)   & energy of $s$             \\
+        %s      & seed                      \\
+        %w(s)   & weighted frequency of $s$ \\
+        \alpha & schedule exponent  \\
+        e(s)   & energy of the seed \\
     \end{tabular}
 \end{figure}
 
@@ -363,7 +360,7 @@ For AlgoFuzz this value is hard coded to 5, this way we emphasize newer inputs m
 In the future, this could be a configurable value for the fuzzer or it could be dynamically changed during the fuzzing process.
 
 After calculating the energy of each input, the schedule uses it to determine the probability of choosing an input.
-The probability of each input is the normalized energy, which is calculated by dividing the energy of the input by the sum of all energies.
+The probability of an input being chosen is the normalized energy, which is calculated by dividing the energy of the input by the sum of all energies.
 
 \section{Important Runtime information}
 In this section, we will discuss the different metrics that we used to evaluate our fuzzer.
@@ -434,14 +431,15 @@ First we ran the experiment with the different coefficients to find out which on
     \item Which coefficient produces the most unique state transitions?
 \end{itemize}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{charts/coef-cov-2.pdf}
+    \caption{Coverage results with different coefficients.}\label{fig:case-study-coeff}
+\end{figure}
+
 To answer the first question we just looked at the percentage of lines covered which is shown in Figure \ref{fig:case-study-coeff}.
 From which we can clearly see that the highest values are concentrated at the coefficient of 0.5.
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.85\textwidth]{charts/coef-cov.pdf}
-    \caption{Coverage results with different coefficients.}\label{fig:case-study-coeff}
-\end{figure}
 
 
 For the second question we looked at the number of unique state transitions, which is shown in Figure \ref{fig:coef-trans}.
@@ -453,7 +451,7 @@ In this case it is harder to say which coefficient works best, so we decided to 
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.75\textwidth]{charts/coef-trans.pdf}
+    \includegraphics[width=0.9\textwidth]{charts/coef-trans-2.pdf}
     \caption{State transitions with different coefficients.}\label{fig:coef-trans}
 \end{figure}
 
@@ -477,12 +475,12 @@ It was also interesting to see the amount of unique paths and state transitions 
 \begin{figure}[!htbp]
     \centering
     \subfloat[PyTeal][Unique Paths.]{
-        \includegraphics[width=0.47\textwidth]{charts/paths.pdf}
+        \includegraphics[width=0.47\textwidth]{charts/paths-2.pdf}
         \label{fig:paths}
     }
     \hfill
     \subfloat[TEAL][Unique Transitions.]{
-        \includegraphics[width=0.47\textwidth]{charts/trans.pdf}
+        \includegraphics[width=0.47\textwidth]{charts/trans-2.pdf}
         \label{fig:trans}
     }
     \caption{Unique coverage paths and state transitions discovered.}
@@ -490,7 +488,7 @@ It was also interesting to see the amount of unique paths and state transitions 
 \end{figure}
 
 Different from the coverage results, the total fuzzer is not too far behind in terms of the amount of unique paths discovered.
-For the state transitions, we see the partial fuzzer perform more or less the same regardless of the driver, at around 1200 transitions.
+For the state transitions, we see the partial fuzzer performs more or less the same regardless of the driver, at around 1200 transitions.
 In contrast, the total fuzzer underperforms for the coverage and combined drivers at around 430 transitions.
 The total fuzzer with the state driver show outstanding results with 2739.2 transitions discovered on average.
 This goes hand in hand with the rejected calls results, since the state driver will most likely prioritize inputs which slightly change the state of the contract and therefore are safer.
