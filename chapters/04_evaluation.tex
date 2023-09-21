@@ -2,7 +2,30 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Evaluation}\label{chapter:evaluation}
+Our original goal was to bring a first prototype fuzzer to the Algorand ecosystem of tools and for this reason we designed and implemented AlgoFuzz.
+In this chapter, we will evaluate AlgoFuzz to see if it fulfills its purpose as a fuzzer.
+The most straightforward way to find out if a fuzzer works is to see if it is able to find bugs, known and unknown.
+Looking at other smart contract fuzzers, such as ContractFuzzer or Harvey, we can see that the most common approach is to run the fuzzer on real-world contracts.
+After which they would see if their fuzzer reported any bugs during the process.
+In our case, since we are dealing with a property-based fuzzer and we do not have a list of predefined bug oracles, we would need to know the contracts in detail to be able to write properties that would find bugs.
+Echidna, the property-based fuzzer for Ethereum, was also faced with this problem.
+Instead of finding bugs, they decided to see if their fuzzer was able to reach certain assertion failures which were randomly added to the contracts.
+
+With these limitations in mind we came up with two different questions that we wanted to answer for our evaluation:
+\begin{enumerate}
+    \item[\textbf{RQ.1}] How does the code coverage evolve over time, especially during prolonged fuzzing sessions?
+
+    \item[\textbf{RQ.2}] How effectively can the fuzz testing tool discover the state space of the smart contract?
+\end{enumerate}
+
+
+
+
 
 \section{Setup}
+
+\subsection*{Chosen Contracts}
+
+\subsection*{Evaluation Protocol}
 
 \section{Results}
