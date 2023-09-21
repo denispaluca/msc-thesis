@@ -363,7 +363,7 @@ In the future, this could be a configurable value for the fuzzer or it could be 
 After calculating the energy of each input, the schedule uses it to determine the probability of choosing an input.
 The probability of an input being chosen is the normalized energy, which is calculated by dividing the energy of the input by the sum of all energies.
 
-\section{Important Runtime information}
+\section{Important Runtime information} \label{section:metrics}
 In this section, we will discuss the different metrics that we used to evaluate our fuzzer.
 
 \paragraph{Number of calls executed} Shows us how efficient the fuzzer is at generating inputs and calling the application.
@@ -387,7 +387,7 @@ This is because paths can have different lengths and a path can be a subset of a
 \paragraph{Number of unique state transition} We record all unique state transitions that were produced by the fuzzing process.
 The more transitions are produced, the closer the fuzzer can be to finding a state that would invalidate the property test.
 
-\section{Case Study: AlgoTether}
+\section{Case Study: AlgoTether} \label{section:case-study}
 Before we go into the evaluation of our fuzzer, we will go through a case study of a smart contract that we wrote for this research.
 The contract is called AlgoTether and it is a simple contract that allows users to mint and transfer tokens.
 AlgoTether is translated from the Solidity contract of the Tether Token \cite{etherscanio_tether_nodate}, which is a stablecoin that is pegged to the US dollar.

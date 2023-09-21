@@ -11,21 +11,36 @@ In our case, since we are dealing with a property-based fuzzer and we do not hav
 Echidna, the property-based fuzzer for Ethereum, was also faced with this problem.
 Instead of finding bugs, they decided to see if their fuzzer was able to reach certain assertion failures which were randomly added to the contracts.
 
-With these limitations in mind we came up with two different questions that we wanted to answer for our evaluation:
+With these considerations in mind we came up with two different questions that we wanted to answer for our evaluation:
 \begin{enumerate}
     \item[\textbf{RQ.1}] How does the code coverage evolve over time, especially during prolonged fuzzing sessions?
 
-    \item[\textbf{RQ.2}] How effectively can the fuzz testing tool discover the state space of the smart contract?
+    \item[\textbf{RQ.2}] How effectively can AlgoFuzz discover the state space of the smart contract?
 \end{enumerate}
-
-
-
-
 
 \section{Setup}
 
 \subsection*{Chosen Contracts}
+For our evaluation, it was difficult to find real-world Algorand smart contracts which adhered to the limitations of our fuzzer namely using the official \ac{ABI}, not using any box state and not interacting with \acp{ASA}.
+For this reason we decided to write our own contracts in PyTeal based on already existing Solidity smart contracts which where used in previous works.
+The first set of contracts we chose were the twelve contracts used in the Echidna evaluation \cite{grieco_echidna_2020}, namely a subset of the VeriSmart-benchmarks \cite{noauthor_kuplverismart-benchmarks_nodate}.
+For our second set of contracts we chose two contract of a larger size than the ones selected before.
+The first one being the Tether stablecoin contract, presented in our case study in \ref{section:case-study}.
+The second one a generic token exchange contract, where the user can buy and sell tokens for Algos given an exchange rate.
 
 \subsection*{Evaluation Protocol}
+The metrics we gathered for our experiments were the ones mentioned in section \ref{section:metrics}.
+We ran each configuration of the fuzzer as we did in the case study, so six configurations in total (two different fuzzing strategies and three different fuzzing drivers).
+For the 12 small contracts we did 10 runs per configuration with a fuzzing time of 10 minutes each.
+In total the fuzzer ran for these contracts for 120 hours.
+The two larger contracts also ran for 10 times per configuration but with a fuzzing time of 30 minutes each.
+For the larger contracts the fuzzer ran in total for 60 hours.
+All in all the experiment ran for 180 hours. After each call to the target contract we recorded the metrics in a \acs{CSV} file. The results that we show are the average of the 10 runs for each configuration.
+
+The experiments were run on a virtual machine hosted on the LRZ Compute Cloud \cite{noauthor_lrz_nodate}.
+The compute node uses Intel(R) Xeon(R) Gold 6148 CPUs at 2.40GHz.
+The virtual machine had 2 CPU cores, 9 GB of RAM and 30 GB of disk space.
+The operating system was Ubuntu 20.04 LTS.
+AlgoFuzz used the Python 3.10.12 interpreter, the Algorand node was version 3.15.1, and the Docker version was 24.0.6.
 
 \section{Results}
