@@ -44,3 +44,12 @@ The operating system was Ubuntu 20.04 LTS.
 AlgoFuzz used the Python 3.10.12 interpreter, the Algorand node was version 3.15.1, and the Docker version was 24.0.6.
 
 \section{Results}
+In this section we will present the quantitative results of our evaluation.
+We also elaborate on how the data was selected and transformed to be able to present it in a meaningful way.
+
+\subsection*{Code Coverage}
+To answer \textbf{RQ.1} we will look at percentage of code coverage over the number of calls to the target contract.
+Other metrics such as the number lines covered or the number of unique paths covered were also considered but were discarded since they did not provide any additional information.
+The reason for this is because these metrics are correlated with each other and the graphs looked very similar.
+The advantage of using the percentage of code coverage is that it is a normalized metric and it is easier to compare the results of different contracts.
+
