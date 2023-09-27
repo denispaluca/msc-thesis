@@ -4,12 +4,11 @@
 \chapter{Methodology / AlgoFuzz}\label{chapter:methodology}
 The primary objective of this research is to design and develop AlgoFuzz, a fuzzer tailored for Algorand smart contracts.
 This chapter will detail the methodology employed, breaking down each step and rationale.
-By clarifying our considerations and assumptions behind specific decisions we aim to enable future researchers or developers to build upon our work.
 
 \section{Fuzzing Approach}
 
 \subsection*{Input Generation}
-When making an Application call on Algorand, the data that is passed can be completely arbitrary.
+When making an application call on Algorand, the data that is passed can be completely arbitrary.
 The smart contract developer can decide on the format of the data and how it should be interpreted.
 This means that the general approach of generating random inputs, could be suitable for such cases.
 However, generating inputs in a completely random fashion is not very effective because the probability of generating a valid input is very low.
@@ -22,7 +21,6 @@ Our fuzzing input would then be the following tuple: \texttt{(function, argument
 To generate the inputs for our fuzzer we will be using a mutation-based approach.
 This approach is a good starting point since it is simple to implement, has been shown to be effective in previous works and it can be extended in the future to include more sophisticated techniques.
 For now, the inputs will be seeded with a minimal value according to their type, such as an empty string.
-In the future, it would be interesting to have the user specify some valid seed values for the different arguments.
 
 \subsection*{Fault Detection}
 Based on our research on Algorand smart contracts, we decided to develop a property-based fuzzer for Algorand.
@@ -37,7 +35,7 @@ Dryrun calls are used to simulate the execution of a transaction without actuall
 They are important for our fuzzer since they allow us to retrieve the coverage information of an application call, which is used as a guiding metric for the fuzzing process (discussed in \ref{section:drivers}).
 
 \subsection*{Granularity of Analysis}
-For the fuzzer to be as general as possible, we decided to make it work with any contract written with \ac{TEAL} without considering the higher level tool (such as PyTeal or TEALScript) used to write the contract.
+For the fuzzer to be as general as possible, we decided to make it work with any contract written in \ac{TEAL} without considering the higher level tool (such as PyTeal or TEALScript) used to write the contract.
 Although the fuzzer will have access to the \ac{TEAL} code of the contract and the \ac{ABI}, it will not be able to leverage white box fuzzing techniques.
 We decided this was outside the scope of this research due to the complexity of implementing such a fuzzer.
 Such a fuzzer would need to be able to parse the \ac{TEAL} code and understand the semantics of the different opcodes.
@@ -90,7 +88,7 @@ Even though the local network can take multiple transactions at the same time, i
 Aside from this, making requests back and forth to the local network is slower than having an interpreter in the same process.
 Also, to retrieve the coverage information of an application call, we need to make two requests to the local network (\texttt{dryrun} and the actual transaction).
 
-The other limitations are functional in nature.
+The other limitations are of functional nature.
 As mentioned we cannot access the box state of the application, because it is not supported by the \texttt{dryrun} call.
 This means that contracts that rely on dynamic storage are not supported or impractical to replicate for our fuzzer.
 
@@ -303,7 +301,7 @@ We then hash this information to create a unique identifier for the state and no
 This is necessary since the state can be very large and storing it for each input could be very expensive.
 One way of using this information to identify interesting inputs is by detecting if it produced a new state.
 This works fine, but we decided to consider inputs that trigger transitions between states as interesting.
-The reason for this is that in the future these transitions can be used to find the input sequence the produces a bug.
+The reason for this is that in the future these transitions can be used to find the input sequence that produces a bug.
 This can be done by going through the transition graph and finding the shortest path between the initial state and the state that produces the bug.
 This process is similar to \emph{shrinking}, where failing test cases are simplified to find the minimal reproducible case.
 The shrinking process is not implemented in our fuzzer, but it is a possible extension.
