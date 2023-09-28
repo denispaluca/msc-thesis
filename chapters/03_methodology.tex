@@ -13,20 +13,22 @@ The smart contract developer can decide on the format of the data and how it sho
 This means that the general approach of generating random inputs, could be suitable for such cases.
 However, generating inputs in a completely random fashion is not very effective because the probability of generating a valid input is very low.
 The vast majority of inputs will be rejected by the application.
-For this reason, our fuzzers considers only contracts that adhere to the official Algorand \ac{ABI} conventions.
+For this reason, our fuzzers considers only contracts that adhere to the official Algorand \ac{ABI} conventions (mentioned in \ref{section:algorand-smartcontracts}).
 Our input generators will be aware of the input structure of the contract.
 This provided us with the different functions that are available in the smart contract and the types of the arguments that they take.
 From this information, comes the first part of the fuzzed input, the second part is the account that is used to call the smart contract.
 Our fuzzing input would then be the following tuple: \texttt{(function, arguments, account)}.
 To generate the inputs for our fuzzer we will be using a mutation-based approach.
-This approach is a good starting point since it is simple to implement, has been shown to be effective in previous works and it can be extended in the future to include more sophisticated techniques.
+This approach is a good starting point since it is simple to implement, has been shown to be effective in previous works \cite{zeller_greybox_2023} and it can be extended in the future to include more sophisticated techniques.
 For now, the inputs will be seeded with a minimal value according to their type, such as an empty string.
 
 \subsection*{Fault Detection}
 Based on our research on Algorand smart contracts, we decided to develop a property-based fuzzer for Algorand.
 As discussed in \ref{section:algorand-smartcontracts}, detecting errors that commonly happen in Algorand smart contracts can be better done by a static analyzer.
 For the evaluation of the input, the user can define properties that should hold for the contract.
+One such property could be the balance of the contract must always be below a certain threshold.
 Alternatively, they can run the fuzzer in \textit{Assertion Mode} which will check for all the possible assertion failures on application calls.
+Assertion Mode is used when the user has a contract which contains assertions that should never fail.
 The properties that the user can define will be dependent on the state of the contract.
 With the state, the user can define arbitrary invariants which should always hold (return \texttt{true}).
 Unfortunately due to limitations of the current version of Algorand nodes we will only be able to retrieve the global and local state of an application.
@@ -48,7 +50,8 @@ An advantage of using coverage is that it gives us a metric that can be used to 
 The reason we also consider state transitions is because our fuzzer relies on property tests on the state of the contract to detect bugs. Therefore, it makes sense to have a fuzzer which  generates inputs that produce novel states.
 
 \subsection*{Stopping Condition}
-The stopping condition of the fuzzer can be configured in multiple ways.
+Choosing the stopping condition for a fuzzer in general is still an open research problem.
+The stopping condition of AlgoFuzz can be configured in multiple ways.
 Similar to Algorithm \ref{alg:fuzz}, the fuzzer can be configured to run for a maximum amount of time.
 Alternatively, the maximum number of calls executed by the fuzzer can be specified.
 In both cases, the fuzzer will be stopped prematurely if an input breaks a property test or if an assertion failure is detected.
@@ -73,10 +76,11 @@ We decided against using these tools for the following reasons:
 
 \paragraph*{Fuzzer.} The fuzzer is implemented as a standalone Python application with a command line interface.
 It connects to the local network through the \acs{REST} \acs{API} by using the Algorand Python \acs{SDK} \cite{noauthor_algorand_nodate-5}.
-We decided to use Python since we also wanted to use PyTeal to write our own Algorand contracts.
-This way we can easily write test suites for our contracts.
+Most Algorand contracts are written in PyTeal, which is a Python library that offers a higher level abstraction over \ac{TEAL}.
+For this reason, we decided to implement the fuzzer in Python as well which simplifies our development process.
+Aside from the lower mental overhead of using the same language, with Python we can compile our PyTeal contracts and then immediately use them in our fuzzer.
 Fuzzers usually rely on generating a large amount of inputs and therefore need a very performant language.
-Although Python is not the fastest language, we expected most of the time to be spent on the \acs{API} calls to the local network.
+Although Python is not the fastest language, we observed by profiling AlgoFuzz that most of the time was spent on the \acs{API} calls to the local network (over 90\%).
 
 \subsection*{Limitations}
 Despite the advantages, using the technologies and approaches that we have chosen comes with some limitations.
@@ -184,7 +188,7 @@ The Uint mutator generates random unsigned integer values. It is initialized wit
     \item bitwise or - Performs a bitwise or with a random value.
     \item bitwise xor - Performs a bitwise xor with a random value.
 \end{itemize}
-The effectiveness of these strategies in fuzzing has been shown in previous works and we expect them to be effective in our case as well.
+The effectiveness of these strategies in fuzzing has been shown in previous works \cite{michal_zalewski_binary_2014} and we expect them to be effective in our case as well.
 
 Ufixed and Byte mutators are special cases of the Uint mutator. The Ufixed mutator is initialized with the size of the integer part and the size of the fractional part. When mutating the value is first converted to an unsigned integer, mutated and then converted back to a fixed point number by dividing it with the fractional part size. The Byte mutator is an alias for the Uint mutator with a size of 8 bits.
 
@@ -257,7 +261,7 @@ These \textit{method fuzzers} each have their own population of interesting inpu
 The population of inputs in this case being a list of tuples of the form \texttt{(arguments, account)}.
 On each iteration the partial fuzzer randomly chooses a method and runs the corresponding method fuzzer.
 All methods have the same probability of being chosen regardless of the amount interesting inputs that are found for them.
-Although this approach seems naive, it has been shown to be reasonably effective in practice from our experiments.
+Although this approach seems naive, it has been shown to be effective in terms of code coverage from our experiments.
 The main advantage of this approach is that it is very easy to implement and it generates new inputs faster.
 The performance gain comes from the fact that the schedulers of the different method fuzzers have fewer inputs to choose from.
 Another subtle advantage of the partial fuzzer is that methods which do not produce any interesting input during the seeding stage will not be completely ignored in the future fuzzing process.
@@ -288,7 +292,7 @@ In this section, we will discuss the different drivers that we chose for our fuz
 As mentioned most fuzzers use some sort of coverage information to guide the fuzzing process.
 This is also the case for our fuzzer.
 The coverage information is retrieved by running the application call in \texttt{dryrun} mode.
-What we retrieve from the \texttt{dryrun} call only tells us which lines of the code were executed.
+What we retrieve from the \texttt{dryrun} call tells us which lines of the code were executed and in what order.
 %Although we can use this information to detect promising inputs, applying better heuristics, such as directed fuzzing, is not possible.
 The coverage information of a call is processed by creating a set of all the lines that were executed.
 This set is called a coverage path.
