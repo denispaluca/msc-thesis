@@ -26,12 +26,12 @@ For now, the inputs will be seeded with a minimal value according to their type,
 Based on our research on Algorand smart contracts, we decided to develop a property-based fuzzer for Algorand.
 As discussed in \ref{section:algorand-smartcontracts}, detecting errors that commonly happen in Algorand smart contracts can be better done by a static analyzer.
 For the evaluation of the input, the user can define properties that should hold for the contract.
-One such property could be the balance of the contract must always be below a certain threshold.
+One such property could be that the balance of the contract must always be below a certain threshold.
 Alternatively, they can run the fuzzer in \textit{Assertion Mode} which will check for all the possible assertion failures on application calls.
-Assertion Mode is used when the user has a contract which contains assertions that should never fail.
+Assertion mode may be used when the user has a contract which contains assertions that should never fail.
 The properties that the user can define will be dependent on the state of the contract.
 With the state, the user can define arbitrary invariants which should always hold (return \texttt{true}).
-Unfortunately due to limitations of the current version of Algorand nodes we will only be able to retrieve the global and local state of an application.
+Due to limitations of the current version of Algorand nodes we will only be able to retrieve the global and local state of an application.
 The methods that manipulate the box state of the application are currently not implemented for \texttt{dryrun} calls.
 Dryrun calls are used to simulate the execution of a transaction without actually executing it.
 They are important for our fuzzer since they allow us to retrieve the coverage information of an application call, which is used as a guiding metric for the fuzzing process (discussed in \ref{section:drivers}).
@@ -65,7 +65,6 @@ Smart contracts are usually small programs \cite{gao_checking_2021}, so they are
 \paragraph*{Contract.} The smart contracts being fuzzed will be deployed on a local Algorand network. This network usually comes with the official AlgoKit CLI tool \cite{noauthor_algokit_nodate}. The setup for such a network is straightforward and can be done with a single command. The local network starts three docker containers to simulate the Algorand blockchain with a \acs{REST} \acs{API} for users to interact with the local network outside the container.
 
 We also looked at different interpreters for \ac{TEAL} that simulate the \ac{AVM} such as teal-interpreter \cite{noauthor_hone-labsteal-interpreter_nodate} and the AlgoBuilder Runtime \cite{noauthor_algo-builderruntime_nodate}.
-Both these projects can be import as NPM packages to be used in JavaScript projects.
 We decided against using these tools for the following reasons:
 \begin{itemize}
     \item They are not official tools and are not maintained by the Algorand Foundation.
@@ -82,39 +81,6 @@ Aside from the lower mental overhead of using the same language, with Python we 
 Fuzzers usually rely on generating a large amount of inputs and therefore need a very performant language.
 Although Python is not the fastest language, we observed by profiling AlgoFuzz that most of the time was spent on the \acs{API} calls to the local network (over 90\%).
 
-\subsection*{Limitations}
-Despite the advantages, using the technologies and approaches that we have chosen comes with some limitations.
-The first one being that the performance of our fuzzer will be limited by the performance of the local network.
-The local network is relatively slow since it simulates all Algorand blockchain operations, such as adding and verifying blocks.
-Due to this, we also need to fund the accounts that we use for the fuzzing process which requires a transaction from a dispenser account to the account being funded.
-Parallelizing the fuzzing process would also not work.
-Even though the local network can take multiple transactions at the same time, it will only execute them sequentially.
-Aside from this, making requests back and forth to the local network is slower than having an interpreter in the same process.
-Also, to retrieve the coverage information of an application call, we need to make two requests to the local network (\texttt{dryrun} and the actual transaction).
-
-The other limitations are of functional nature.
-As mentioned we cannot access the box state of the application, because it is not supported by the \texttt{dryrun} call.
-This means that contracts that rely on dynamic storage are not supported or impractical to replicate for our fuzzer.
-
-Our tool will initially not be supporting all argument types from the \ac{ABI}, but it will be supporting the most common ones.
-The most important types left out will be:
-\begin{itemize}
-    \item \texttt{address}: This type is used to represent an address on the Algorand network.
-          Giving random addresses in this case is not a good idea since the address is a 58 byte array that is encoded in base32.
-          This means that the probability of generating a valid address is very low. For this reason, we decided to leave this type out of the initial implementation.
-    \item \texttt{reference types}: Aside from the account reference type, all other reference types will not be supported since they are difficult to generate.
-          For example, working with assets requires the user to opt-in to the asset as well as the application being fuzzed.
-          Since this feature is not currently supported also generating an asset reference is not possible.
-\end{itemize}
-
-Another limitation of our tool is that it expects opt-in calls to be empty.
-In some Algorand contracts, opt-in calls may be connected to a certain function call that requires specific arguments.
-Currently, it is not possible to infer from the \ac{ABI} of the contract with which function an opt-in call is connected to.
-Therefore, we decided to leave this feature out of the initial implementation and we opt in all required accounts with empty application calls.
-Similarly to the opt-in calls, all other special calls are not executed by our tool.
-The fuzzer only executes noop applications calls.
-In the future, we could extend our tool to also randomly execute special calls.
-
 \subsection*{Architecture}
 The architecture of our solution is shown in Figure \ref{fig:algofuzz-architecture}.
 We extended the generic architecture in Figure \ref{fig:generic-fuzzer-architecture} by adding multiple ways to guide the fuzzing process through our different drivers which are passed on to the \texttt{ContractFuzzer}.
@@ -123,7 +89,7 @@ To handle operations connected to the local network, we created \texttt{FuzzAppC
 It encapsulates all the logic for making calls to the local network and retrieving the results.
 In Section \ref{section:implementation} we will go over the implementation details of the different modules.
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/arc.png}
     \caption{Architecture of AlgoFuzz}\label{fig:algofuzz-architecture}
@@ -297,11 +263,14 @@ What we retrieve from the \texttt{dryrun} call tells us which lines of the code 
 The coverage information of a call is processed by creating a set of all the lines that were executed.
 This set is called a coverage path.
 If an input produces a new coverage path, it is considered interesting.
+The reason we use coverage paths instead of coverage lines is that the latter can be very large.
+Also, if we had to compare two lists of lines they may contain the same lines but in a different order.
+An example for this would be a loop.
 
 \paragraph{State Driver.}
 Since our fuzzer relies on property tests on the state of the contract to detect bugs, it makes sense to have a fuzzer which optimizes for generating inputs that produce different states.
 To use the state as a driver, we retrieve the global state of the application and the local states of the accounts in the account mutator.
-We then hash this information to create a unique identifier for the state and not store the entire state.
+We then hash this information by creating a deterministic json representation of the state and then using the \texttt{MD5} hash function.
 This is necessary since the state can be very large and storing it for each input could be very expensive.
 One way of using this information to identify interesting inputs is by detecting if it produced a new state.
 This works fine, but we decided to consider inputs that trigger transitions between states as interesting.
@@ -365,6 +334,40 @@ In the future, this could be a configurable value for the fuzzer or it could be 
 After calculating the energy of each input, the schedule uses it to determine the probability of choosing an input.
 The probability of an input being chosen is the normalized energy, which is calculated by dividing the energy of the input by the sum of all energies.
 
+
+\section{Limitations}
+Despite the advantages, using the technologies and approaches that we have chosen comes with some limitations.
+The first one being that the performance of our fuzzer will be limited by the performance of the local network.
+The local network is relatively slow since it simulates all Algorand blockchain operations, such as adding and verifying blocks.
+Due to this, we also need to fund the accounts that we use for the fuzzing process which requires a transaction from a dispenser account to the account being funded.
+Parallelizing the fuzzing process would also not work.
+Even though the local network can take multiple transactions at the same time, it will only execute them sequentially.
+Aside from this, making requests back and forth to the local network is slower than having an interpreter in the same process.
+Also, to retrieve the coverage information of an application call, we need to make two requests to the local network (\texttt{dryrun} and the actual transaction).
+
+The other limitations are of functional nature.
+As mentioned we cannot access the box state of the application, because it is not supported by the \texttt{dryrun} call.
+This means that contracts that rely on dynamic storage are not supported or impractical to replicate for our fuzzer.
+
+Our tool will initially not be supporting all argument types from the \ac{ABI}, but it will be supporting the most common ones.
+The most important types left out will be:
+\begin{itemize}
+    \item \texttt{address}: This type is used to represent an address on the Algorand network.
+          Giving random addresses in this case is not a good idea since the address is a 58 byte array that is encoded in base32.
+          This means that the probability of generating a valid address is very low. For this reason, we decided to leave this type out of the initial implementation.
+    \item \texttt{reference types}: Aside from the account reference type, all other reference types will not be supported since they are difficult to generate.
+          For example, working with assets requires the user to opt-in to the asset as well as the application being fuzzed.
+          Since this feature is not currently supported also generating an asset reference is not possible.
+\end{itemize}
+
+Another limitation of our tool is that it expects opt-in calls to be empty.
+In some Algorand contracts, opt-in calls may be connected to a certain function call that requires specific arguments.
+Currently, it is not possible to infer from the \ac{ABI} of the contract with which function an opt-in call is connected to.
+Therefore, we decided to leave this feature out of the initial implementation and we opt in all required accounts with empty application calls.
+Similarly to the opt-in calls, all other special calls are not executed by our tool.
+The fuzzer only executes noop applications calls.
+In the future, we could extend our tool to also randomly execute special calls.
+
 \section{Important Runtime information} \label{section:metrics}
 In this section, we will discuss the different metrics that we used to evaluate our fuzzer.
 
@@ -390,7 +393,7 @@ This is because paths can have different lengths and a path can be a subset of a
 The more transitions are produced, the closer the fuzzer can be to finding a state that would invalidate the property test.
 
 \section{Case Study: AlgoTether} \label{section:case-study}
-Before we go into the evaluation of our fuzzer, we will go through a case study of a smart contract that we wrote for this research.
+Before we go into the evaluation of our fuzzer, we will go through a case study to determine which parameters work best for our fuzzer.
 The contract is called AlgoTether and it is a simple contract that allows users to mint and transfer tokens.
 AlgoTether is translated from the Solidity contract of the Tether Token \cite{etherscanio_tether_nodate}, which is a stablecoin that is pegged to the US dollar.
 
@@ -424,14 +427,14 @@ For this we used the weights from 0.1 to 0.9 with a step of 0.1.
 The weights of 0 and 1 are not included since that would be almost the same as using coverage or state driver respectively.
 
 The case study was conducted on a local machine with an Intel Core i7-8550U CPU and 16GB of RAM.
-Each fuzzer was run 5 times with a timeout of 2 minutes.
-The averages of the runs were gathered.
+Each fuzzer was run 5 times with a timeout of 2 minutes and the averages of the runs were gathered.
+Since smart contracts are small programs, the fuzzer can achieve meaningful results for our case study in a short amount of time.
 
 \subsection*{Results}
-First we ran the experiment with the different coefficients to find out which one works best. We focused on two key questions:
+First we ran the experiment with the Combined Driver using different coefficients (state weight) to find out which one works best. We focused on two key questions:
 \begin{itemize}
-    \item Which coefficient leads to more state being covered?
-    \item Which coefficient produces the most unique state transitions?
+    \item Which coefficient leads to more code being covered?
+    \item Which coefficient produces more unique state transitions?
 \end{itemize}
 
 \begin{figure}[htbp]
@@ -450,7 +453,12 @@ Here it is less clear which coefficient works best.
 For the partial fuzzer, the number of transitions goes down as the state coefficient increases.
 This seems counterintuitive at first, but it makes sense when consider that the number of calls executed also goes down.
 When we calculate the ratio of transitions to calls executed, we see that it is mostly staying the same throughout the different coefficients (at around 22\% for the partial fuzzer and 11\% for the total fuzzer).
-In this case it is harder to say which coefficient works best, so we decided to use the coefficient of 0.5 based on the coverage results.
+
+\begin{mybox}
+    In the case of state discovery it is difficult to say which coefficient works best.
+    Therefore, based on the coverage results we chose the coefficient of 0.5 for the combined driver.
+\end{mybox}
+
 
 \begin{figure}[htbp]
     \centering
@@ -496,4 +504,11 @@ In contrast, the total fuzzer underperforms for the coverage and combined driver
 The total fuzzer with the state driver show outstanding results with 2739.2 transitions discovered on average.
 This goes hand in hand with the rejected calls results, since the state driver will most likely prioritize inputs which slightly change the state of the contract and therefore are safer.
 
-From these results we can conclude that our fuzzer with the different configurations is able to cover a large amount of the code and state space of the contract.
+\begin{mybox}
+    From these results we can make the following preliminary conclusions:
+    \begin{enumerate}
+        \item The total fuzzer with the state driver is the most efficient at generating inputs that are accepted by the contract.
+        \item The total fuzzer with the state driver is also the best at discovering new state transitions.
+        \item The partial fuzzer outperforms the total fuzzer in terms of coverage across all drivers.
+    \end{enumerate}
+\end{mybox}
