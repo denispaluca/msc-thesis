@@ -397,7 +397,7 @@ Before we go into the evaluation of our fuzzer, we will go through a case study 
 The contract is called AlgoTether and it is a simple contract that allows users to mint and transfer tokens.
 AlgoTether is translated from the Solidity contract of the Tether Token \cite{etherscanio_tether_nodate}, which is a stablecoin that is pegged to the US dollar.
 
-The reason we decided to translate this contract is because there are no Algorand contracts that use the official \ac{ABI} and do not rely on box storage, which we do not support.
+The reason we decided to translate this contract is because there are no Algorand contracts that use the official \ac{ABI} and do not rely on box storage.
 This makes it hard to find contracts that are long enough to be interesting for our evaluation.
 
 \subsection*{Contract Features}
@@ -412,7 +412,6 @@ In our case, we will need only 3 local state values for the account, since we ha
 
 The contract is \emph{ownable} which means there is an owner account that has special privileges and can perform certain operations that other accounts cannot.
 The owner of the contract is the account that deployed the contract and it can be changed only by the current owner.
-
 The contract is also \emph{pausable}, meaning that the owner can pause the contract, which will prevent any transfers from happening.
 
 The contract also has a blacklist feature, which allows the owner to add accounts to a blacklist.
@@ -437,7 +436,7 @@ First we ran the experiment with the Combined Driver using different coefficient
     \item Which coefficient produces more unique state transitions?
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.9\textwidth]{charts/coef-cov-2.pdf}
     \caption{Coverage results with different coefficients.}\label{fig:case-study-coeff}
@@ -460,7 +459,7 @@ When we calculate the ratio of transitions to calls executed, we see that it is 
 \end{mybox}
 
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{charts/coef-trans-2.pdf}
     \caption{State transitions with different coefficients.}\label{fig:coef-trans}
@@ -480,7 +479,7 @@ This means that it is the most efficient at generating inputs that are accepted 
 Aside from this, we can see that the partial fuzzer has higher coverage than the total fuzzer across all drivers.
 And, as expected, for the total fuzzer the coverage driver has the highest coverage.
 
-It was also interesting to see the amount of unique paths and state transitions that were covered by the different fuzzers, show
+It was also interesting to see the amount of unique paths and state transitions that were covered by the different fuzzers, shown in Figure \ref{fig:path-trans}.
 
 
 \begin{figure}[!htbp]
