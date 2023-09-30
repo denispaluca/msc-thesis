@@ -9,18 +9,41 @@
     \caption{Final code coverage for each contract.}\label{table:covs}
 \end{table}
 
+\begin{table}[htbp]
+    \centering
+    \csvautotabular{data/trans.csv}
+    \caption{Average unique transitions for each configuration at the end of the runs.}\label{table:trans}
+\end{table}
+
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics*[width=0.85\textwidth]{charts/AlgoTether_range.pdf}
-    \caption{Code coverage for AlgoTether. (yellow line is median, brown line is average)}
+    \includegraphics*[width=0.75\textwidth]{charts/AlgoTether_range.pdf}
+    \caption{Code coverage for AlgoTether. (yellow - median, brown - mean)}
     \label{fig:AlgoTether range}
 \end{figure}
 
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics*[width=0.85\textwidth]{charts/ExchangeToken_range.pdf}
-    \caption{Code coverage for ExchangeToken. (yellow line is median, brown line is average)}
+    \includegraphics*[width=0.75\textwidth]{charts/ExchangeToken_range.pdf}
+    \caption{Code coverage for ExchangeToken. (yellow - median, brown - mean)}
     \label{fig:ExchangeToken range}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics*[width=0.8\textwidth]{charts/AlgoTether_range_trans copy.pdf}
+    \caption{Unique transitions for AlgoTether. (yellow - median, brown - mean)}
+    \label{fig:atrangetrans}
+\end{figure}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics*[width=0.8\textwidth]{charts/ExchangeToken_range_trans copy.pdf}
+    \caption{Unique transitions for ExchangeToken. (yellow - median, brown - mean)}
+    \label{fig:etrangetrans}
 \end{figure}

@@ -6,9 +6,9 @@ Our original goal was to bring a first prototype fuzzer to the Algorand ecosyste
 In this chapter, we will evaluate AlgoFuzz to see if it fulfills its purpose as a fuzzer.
 The most straightforward way to find out if a fuzzer works is to see if it is able to find bugs, known and unknown.
 Looking at other smart contract fuzzers, such as ContractFuzzer or Harvey, we can see that the most common approach is to run the fuzzer on real-world contracts.
-After which they would see if their fuzzer reported any bugs during the process.
+After which, they would see if their fuzzer reported any bugs during the process.
 In our case, since we are dealing with a property-based fuzzer and we do not have a list of predefined bug oracles, we would need to know the contracts in detail to be able to write properties that would find bugs.
-Echidna, the property-based fuzzer for Ethereum, was also faced with this problem.
+Echidna, the property-based fuzzer for Ethereum, was also faced with the same problem during their evaluation.
 Instead of finding bugs, they decided to see if their fuzzer was able to reach certain assertion failures which were randomly added to the contracts.
 
 With these considerations in mind we came up with two different questions that we wanted to answer for our evaluation:
@@ -49,14 +49,13 @@ We also elaborate on how the data was selected and transformed to be able to pre
 
 From the data we collected we excluded some runs which were uncharacteristically slow, assuming that they were statistical outliers caused by the virtual machine.
 The runs we excluded were the ones where the number of calls was much lower than the average for the same configuration.
-These happened to be runs on the AlgoTether contract with the Total Fuzzer and the Coverage driver.
+These were the first 3 runs on AlgoTether contract with the Total Fuzzer and the Coverage driver.
 
-We wanted to gather the aggregate data of each configuration per call, so for our graphs we took as maximum number of calls the minimum number of calls of the runs in the same configuration.
-For example if we had run 1 with 10 calls, run 2 with 20 calls and run 3 with 15 calls, we would only take the first 10 calls of each run.
-As we mentioned that most runs had almost the same number of calls, this did not affect the results in a significant way.
-After this we calculated the average, median, minimum and maximum of each metric for each call.
-We used this to graph the different metrics over the number of calls.
-In our graphs we will only be presenting the values of the larger contracts, since the smaller contracts reach a saturation point very quickly and they do not change significantly after that.
+We wanted to aggregate the data of each configuration per call.
+One issue with this approach is that due to the random nature of the fuzzer, the number of calls per run was almost never the same.
+For all runs in a configuration, we calculated the average, median, minimum and maximum of each metric for each call.
+For the averages we only considered the available data points, so if a run had no calls beyond a certain point we did not consider it for the average.
+In some graphs we will only be presenting the values of the larger contracts, since the smaller contracts reach a saturation point very quickly and they do not change significantly after that.
 
 Aside from that we also calculated the values for the last call of each run to see what the final state of the fuzzer was.
 
@@ -89,9 +88,9 @@ All the different configurations are shown in the same graph to be able to compa
 We can observe that the Total Fuzzer, in both cases regardless of the driver, lags behind the Partial Fuzzer.
 
 Another interesting observation is that the fuzzer behaves very differently for the two contracts in the early stages.
-For the AlgoTether contract, the fuzzer immediately covers new code on almost every call for while consuming the seeds.
+For the AlgoTether contract, the fuzzer immediately covers new code on almost every call while consuming the seeds.
 On the other hand, for the ExchangeToken contract, most of the seed values do not cover new code.
-We also graphed the ranges and the medians of the coverage for each contract, which can be seen in Figure \ref{fig:AlgoTether range} and Figure \ref{fig:ExchangeToken range} respectively.
+We also graphed the ranges and the medians of the coverage for each configuration separately, which can be seen in Figure \ref{fig:AlgoTether range} and Figure \ref{fig:ExchangeToken range} respectively.
 In these graphs can be seen that the coverage has no variance in the beginning for the Total fuzzer, while the Partial fuzzer has a lot of variance depending on the driver.
 
 In Table \ref{table:covs-noseed-acc} we can see the final code coverage for each contract after we remove the coverage gained by the seed inputs.
@@ -105,3 +104,43 @@ The only exception being the Total State fuzzer on the AlgoTether, ExchangeToken
     \csvautotabular{data/covs-noseed-acc.csv}
     \caption{Final code coverage for each contract subtracting seed coverage.}\label{table:covs-noseed-acc}
 \end{table}
+
+
+
+\begin{figure}[t]
+    \centering
+    \subfloat[AlgoTether][AlgoTether]{
+        \includegraphics[width=0.48\textwidth]{charts/AlgoTether_ unique_transitions .pdf}
+        \label{fig:AlgoTether_trans}
+    }
+    \hfill
+    \subfloat[ExchangeToken][ExchangeToken]{
+        \includegraphics[width=0.48\textwidth]{charts/ExchangeToken_ unique_transitions .pdf}
+        \label{fig:ExchangeToken_strans}
+    }
+    \caption{Average transitions achieved by AlgoTether and ExchangeToken for all configurations.}
+    \label{fig:unique_transitions}
+\end{figure}
+
+\subsection*{State Discovery}
+For \textbf{RQ.2} we will look at the number of unique state transitions over the number of calls to the target contract.
+Although a new state transition does not necessarily mean that a new state was discovered, it is a good approximation (since the maximal number of transitions is equal to number of states squared).
+In Figure \ref{fig:unique_transitions} we can see this metric for the AlgoTether and ExchangeToken contracts.
+Here we confirm our previous observations that we made for the Total State fuzzer in the case study in section \ref{section:case-study} which showed us that it is the most effective fuzzer at discovering new states.
+These results also show that using the Total State fuzzer introduces an overhead since the number of calls is much lower even though the fuzzers run for the same amount of time.
+The other configurations of the Total fuzzer in this metric are heavily underperforming by comparison to the Total State fuzzer and the Partial fuzzer. They are barely reaching around 5000 or 2000 transitions, while the other fuzzers reach between 15000 and 30000 transitions. The Total fuzzer with the Coverage or Combined driver also introduces more variance in the number of transitions, as can be seen in Figure \ref{fig:atrangetrans} and Figure \ref{fig:etrangetrans}.
+
+To compare the different configurations across all contracts we gathered the final average number of unique transitions for each configuration, shown in Table \ref{table:trans}.
+This data we then normalized for each contract (each row sums up to one), to create the box plots in Figure \ref{fig:trans-box}.
+Still, we observe that the Total fuzzer with the State driver is the most effective at discovering new transitions. Same as before, the Partial fuzzers perform almost the same across all drivers and the Total fuzzers with the Coverage and Combined drivers perform the worst.
+
+
+
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics*[width=0.8\textwidth]{charts/trans-box.pdf}
+    \caption{Box plot of the unique transitions normalized}\label{fig:trans-box}
+\end{figure}
+
