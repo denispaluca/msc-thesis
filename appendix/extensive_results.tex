@@ -1,0 +1,26 @@
+% !TeX root = ../main.tex
+% Add the above to each chapter to make compiling the PDF easier in some editors.
+
+\chapter{Extensive Results}\label{chapter:extensive-results}
+
+\begin{table}[htbp]
+    \centering
+    \csvautotabular{data/covs-flipped.csv}
+    \caption{Final code coverage for each contract.}\label{table:covs}
+\end{table}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics*[width=0.85\textwidth]{charts/AlgoTether_range.pdf}
+    \caption{Code coverage for AlgoTether. (yellow line is median, brown line is average)}
+    \label{fig:AlgoTether range}
+\end{figure}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics*[width=0.85\textwidth]{charts/ExchangeToken_range.pdf}
+    \caption{Code coverage for ExchangeToken. (yellow line is median, brown line is average)}
+    \label{fig:ExchangeToken range}
+\end{figure}
