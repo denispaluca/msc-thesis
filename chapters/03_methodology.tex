@@ -205,6 +205,8 @@ The mutating strategy differs from the tuple mutator.
 We first generate a random number from 1 to the number of arguments of the method which will be the number of arguments that we mutate.
 Then we use this number to sample the indices of the arguments that we will mutate.
 For the sampled indices, we mutate the argument with the respective mutator.
+The seed of this mutator is a tuple of the seeds of the argument mutators.
+When generating our seeds for the whole contract we combine the method seed with each account. Meaning that we have a seed for each method and account combination.
 
 
 \subsection*{Contract Fuzzer}
