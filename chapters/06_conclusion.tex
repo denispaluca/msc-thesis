@@ -4,9 +4,49 @@
 \chapter{Conclusion}\label{chapter:conclusion}
 
 \section*{Future Work}
+In this section we will discuss possible future work.
+We have divided this section into three subsections.
+Firstly we will discuss new features that could be added to AlgoFuzz.
+Secondly we will discuss how the limitations of AlgoFuzz could be addressed.
+Lastly we will go over how the evaluation of AlgoFuzz could be improved.
 
 \subsection*{Features}
+Making seed values configurable would allow users to test specific values that they think may be problematic.
+This could be done in multiple ways either by letting the user specify the seed values for different data types or by specifying the seed values for methods for the contract.
+The user could potentially also specify the accounts that should be used for the runs, by choosing the account creating the contract, the accounts interacting with the contract, and the accounts that are passed as arguments to contract methods.
+
+Another feature would be the ability to redeploy the contract during the fuzzing process.
+As it stands now, the contract is deployed once and then fuzzing is performed on the deployed contract.
+In the future, the contract could be redeployed to have different sequences of calls be executed on the contract.
+Potentially leading to different states of the contract and different code coverage.
+For such a feature, the user could for example specify the number of calls that should be executed before redeploying the contract.
+
+AlgoFuzz could also be extended to support shrinking of failing inputs.
+This could be done by using the different by going backwards through the state transitions, starting from the failing state.
+This would allow the user to get a minimal transaction sequence for a failing run.
+
+The fuzzer could also be enhanced to support static analysis methods which would allow the fuzzer to more efficiently explore different code paths.
 
 \subsection*{Addressing Limitations}
+Currently, the \texttt{dryrun} endpoint is being phased out in favor of a new endpoint called \texttt{simulate}.
+This new endpoint does not yet support code coverage, but it is planned to be added in the future.
+The advantage here is that the \texttt{simulate} endpoint would also support box storage, which is one of the main limitations of AlgoFuzz.
+
+Another limitation of AlgoFuzz is that it does not support \acp{ASA}.
+One way to address this is for the user to configure the fuzzer to use specific \acp{ASA} which are already deployed on the network.
+The use could pass a list of \acp{ASA} to the fuzzer which would then opt-in all accounts to the \acp{ASA} before starting the fuzzing process.
+Similarly, support for other reference type arguments could be added to the fuzzer.
+
+
+When compiled with the Beaker framework, contracts not only include the usual \ac{ABI} information but also provide hints about the different methods.
+These hints include what kind of transaction type each method supports.
+Such as a method that should be called when the user is opting in to an application.
+With this information, the fuzzer could then support a wider range of contracts.
 
 \subsection*{Evaluation}
+After alleviating some of the limitations of AlgoFuzz, the evaluation could be improved by running the fuzzer on a larger set of contracts.
+The goal of a future evaluation would be to test the fuzzer against contracts that are currently deployed on Algorand.
+As more and more contracts support the official \ac{ABI} in the future, these contracts could be candidates for a new evaluation.
+
+Another alternative to the current evaluation would be to find a set of contracts with know bugs.
+Then, carefully write property tests and fuzz the contracts to see if these properties would be violated.
