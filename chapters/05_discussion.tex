@@ -5,8 +5,35 @@
 
 \section{Findings and Interpretations}
 
+\subsection*{RQ.1 Code Coverage}
+
+\subsection*{RQ.2 State Discovery}
+
 \section{Threats to Validity}
+In this section we will discuss the threats to the validity of our study.
+We differentiate between internal and external threats to validity.
+Internal validity referring to the correctness of the drawn conclusions and minimization of methodological errors.
+External validity refers to the extent the results can be generalized to other contexts.
 
 \subsection*{Internal}
+As we already mentioned in \ref{section:results}, we had to exclude runs from the analysis.
+We assume that the LRZ server may have been under heavy load during the time of the runs.
+Other runs might have also been affected by the load.
+Although we currently have no way of knowing the impact of the load on the different runs, we cannot exclude that it had an impact on the results.
+
+Another threat to internal validity is the non-deterministic behavior of the smart contract because of different blockchain states.
+We run the smart contracts against the same local Algorand network without resetting the network, since doing so after each run would have been too time-consuming.
+For this reason, the results of the runs may have been affected by not starting out with a clean state of the network.
 
 \subsection*{External}
+The external validity of our study is limited by the number of smart contracts that we analyzed and by the fact that we only analyzed smart contracts which were ported to Algorand by us.
+AlgoFuzz cannot be used to analyze smart contracts which do not adhere to the official \ac{ABI}.
+This is the case for the vast majority of the most popular smart contracts on Algorand \cite{noauthor_algorand_nodate-6}.
+Other limitations such as lack of dynamic storage support (box storage) and lack of support for \acp{ASA} may to some extent affect the external validity of our study.
+
+The contracts we analyzed may also not be representative of the smart contracts that are currently deployed on Algorand.
+Contracts on Algorand may be more complex than the ones we analyzed.
+Aside from this, these contracts may have bugs which were introduced during the porting process.
+
+In future \ac{ABI} versions, more functionality may be added which may not be compatible with AlgoFuzz.
+This may limit the external validity of our findings for contracts which are written with an \ac{ABI} version that is not currently supported.
