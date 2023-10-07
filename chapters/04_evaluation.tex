@@ -3,7 +3,7 @@
 
 \chapter{Evaluation}\label{chapter:evaluation}
 Our original goal was to bring a first prototype fuzzer to the Algorand ecosystem of tools and for this reason we designed and implemented AlgoFuzz.
-In this chapter, we will evaluate AlgoFuzz to see if it fulfills its purpose as a fuzzer.
+In this chapter, we will evaluate AlgoFuzz to see if it fulfills its purpose as a fuzzer for Algorand smart contracts.
 The most straightforward way to find out if a fuzzer works is to see if it is able to find bugs, known and unknown.
 Looking at other smart contract fuzzers, such as ContractFuzzer or Harvey, we can see that the most common approach is to run the fuzzer on real-world contracts.
 After which, they would see if their fuzzer reported any bugs during the process.
@@ -13,7 +13,7 @@ Instead of finding bugs, they decided to see if their fuzzer was able to reach c
 
 With these considerations in mind we came up with two different questions that we wanted to answer for our evaluation:
 \begin{enumerate}
-    \item[\textbf{RQ.1}] How does the code coverage evolve over time, especially during prolonged fuzzing sessions?
+    \item[\textbf{RQ.1}] How does the code coverage evolve over time, especially during prolonged fuzzing sessions? Code coverage has been shown to correlate with the number of bugs found \cite{kochhar_code_2015}.
 
     \item[\textbf{RQ.2}] How effectively can AlgoFuzz discover the state space of the smart contract?
 \end{enumerate}
@@ -23,17 +23,19 @@ With these considerations in mind we came up with two different questions that w
 \subsection*{Chosen Contracts}
 For our evaluation, it was difficult to find real-world Algorand smart contracts which adhered to the limitations of our fuzzer namely using the official \ac{ABI}, not using any box state and not interacting with \acp{ASA}.
 For this reason we decided to write our own contracts in PyTeal based on already existing Solidity smart contracts which where used in previous works.
+This way we can leverage existing real-world contracts, while still adhering to our limitations.
 The first set of contracts we chose were the twelve contracts used in the Echidna evaluation \cite{grieco_echidna_2020}, namely a subset of the VeriSmart-benchmarks \cite{noauthor_kuplverismart-benchmarks_nodate}.
 For our second set of contracts we chose two contract of a larger size than the ones selected before.
 The first one being the Tether stablecoin contract, presented in our case study in \ref{section:case-study}.
-The second one a generic token exchange contract, where the user can buy and sell tokens for Algos given an exchange rate.
+The second one is a generic token exchange contract, where the user can buy and sell tokens for Algos given an exchange rate, as this is a common use case for smart contracts.
 
 \subsection*{Evaluation Protocol}
 The metrics we gathered for our experiments were the ones mentioned in section \ref{section:metrics}.
 We ran each configuration of the fuzzer as we did in the case study, so six configurations in total (two different fuzzing strategies and three different fuzzing drivers).
 For the 12 small contracts we did 10 runs per configuration with a fuzzing time of 10 minutes each.
+As these contracts are small the fuzzer should be able to reach a saturation point in this time.
 In total the fuzzer ran for these contracts for 120 hours.
-The two larger contracts also ran for 10 times per configuration but with a fuzzing time of 30 minutes each.
+The two larger contracts also ran for 10 times per configuration but with a fuzzing time of 30 minutes each, as these contracts will take longer to reach a saturation point.
 For the larger contracts the fuzzer ran in total for 60 hours.
 All in all the experiment ran for 180 hours. After each call to the target contract we recorded the metrics in a \acs{CSV} file. The results that we show are the average of the 10 runs for each configuration.
 
@@ -55,6 +57,9 @@ We wanted to aggregate the data of each configuration per call.
 One issue with this approach is that due to the random nature of the fuzzer, the number of calls per run was almost never the same.
 For all runs in a configuration, we calculated the average, median, minimum and maximum of each metric for each call.
 For the averages we only considered the available data points, so if a run had no calls beyond a certain point we did not consider it for the average.
+This does not affect our values since most runs achieve a similar number of calls and by the end they have all reached a saturation point.
+This was only done for the graphs where we are showing the values per call.
+For the final values we took the data from the run with the least number of calls and used that index to get the final values for all runs.
 In some graphs we will only be presenting the values of the larger contracts, since the smaller contracts reach a saturation point very quickly and they do not change significantly after that.
 
 Aside from that we also calculated the values for the last call of each run to see what the final state of the fuzzer was.
@@ -62,7 +67,6 @@ Aside from that we also calculated the values for the last call of each run to s
 \subsection*{Code Coverage}
 To answer \textbf{RQ.1} we will look at percentage of code coverage over the number of calls to the target contract.
 Other metrics such as the number lines covered or the number of unique paths covered were also considered but were discarded since they did not provide any additional information.
-The reason for this is because these metrics are correlated with each other and the graphs looked very similar.
 The advantage of using the percentage of code coverage is that it is a normalized metric and it is easier to compare the results of different contracts.
 
 
@@ -84,6 +88,7 @@ The advantage of using the percentage of code coverage is that it is a normalize
 In Figure \ref{fig:percent_coverage} we can see the percentage of code coverage over the number of calls for the two larger contracts.
 The x axis which represents the number of calls is shown in logarithmic scale.
 This is because coverage increases very quickly in the beginning and then it slows down.
+We have also added a vertical line at the point where all the seed values have been consumed and after which the fuzzer is only using generated values.
 All the different configurations are shown in the same graph to be able to compare them.
 We can observe that the Total Fuzzer, in both cases regardless of the driver, lags behind the Partial Fuzzer.
 
@@ -125,6 +130,7 @@ The only exception being the Total State fuzzer on the AlgoTether, ExchangeToken
 \subsection*{State Discovery}
 For \textbf{RQ.2} we will look at the number of unique state transitions over the number of calls to the target contract.
 Although a new state transition does not necessarily mean that a new state was discovered, it is a good approximation (since the maximal number of transitions is equal to number of states squared).
+The best case scenario would be if the fuzzer discovers a new transition on every call.
 In Figure \ref{fig:unique_transitions} we can see this metric for the AlgoTether and ExchangeToken contracts.
 Here we confirm our previous observations that we made for the Total State fuzzer in the case study in section \ref{section:case-study} which showed us that it is the most effective fuzzer at discovering new states.
 These results also show that using the Total State fuzzer introduces an overhead since the number of calls is much lower even though the fuzzers run for the same amount of time.
