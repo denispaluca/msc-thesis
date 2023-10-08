@@ -10,5 +10,5 @@ The tool uses greybox fuzzing techniques to maximize code coverage and the disco
 To evaluate the efficacy of AlgoFuzz, it is examined through experiments on Algorand smart contracts translated  from the Solidity contracts in Echidna benchmarks. The experiment ran for 10 times for 10 minutes for 6 different configurations of the fuzzer on 12 contracts.
 Aside from that, we evaluate AlgoFuzz on two larger Algorand smart contracts, one of which is translated from the USD Tether smart contract and the other is a smart contract for a token exchange.
 In this experiment differently from the previous one, each run was 30 minutes.
-For the Echidna benchmarks, AlgoFuzz was able to cover 64.04\% of the code, discover 2.66 unique coverage paths, and make 10840.12 unique state transitions on average. For the two larger contracts, these values were 72.56\%, 11.14, 14113.64 respectively.
+For the Echidna benchmarks, AlgoFuzz was able to cover 64.04\% of the code, discover 2.66 unique coverage paths, and make 0.4 unique state transitions per call on average. For the two larger contracts, these values were 72.56\%, 11.14, 0.2 respectively.
 
