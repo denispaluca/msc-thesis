@@ -2,12 +2,41 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Discussion}\label{chapter:discussion}
+In this chapter we will discuss the findings of our study and the threats to the validity of the results.
 
 \section{Findings and Interpretations}
 
 \subsection*{RQ.1 Code Coverage}
+The results in section \ref{section:results-code-coverage} show our approach was able to achieve a code coverage of xx\% on average.
+The code coverage also when we exclude the coverage achieved by the seed values is substantial.
+AlgoFuzz was able to achieve a code coverage of xx\% on average without the seed values.
+Although 100\% code coverage was not achieved in any of the runs, we assume this is due to the fact that some lines of code are not reachable, for example lines that are executed during the deployment of the smart contract.
+
+Our data indicate the usual trend with regard to code coverage wherein the code coverage increases rapidly initially, but then it tends to plateau as the fuzzing session is extended.
+Because the fuzzer works with structured inputs, it does not have to surpass the parse of the program under test.
+Therefore, during the initial phases of fuzzing, the most straightforward and easily reachable code paths are explored.
+As most of the code paths are explored, the probability of finding new code paths diminishes.
+This of course is dependent on the structure of the smart contract being tested.
+
+\begin{mybox}
+    \textbf{Answer to RQ.1:} The results from our study suggest that AlgoFuzz demonstrates is proficient in covering new code.
+    In multiple instances, AlgoFuzz was able to attain a substantial coverage rate.
+    Even when accounting for the coverage gained by the seed values, AlgoFuzz was able to achieve additional coverage.
+\end{mybox}
 
 \subsection*{RQ.2 State Discovery}
+When dealing with state discovery, we cannot simply create a ratio of the number of unique states to the total number of states.
+This is because of the state explosion problem (or combinatorial explosion) which is a phenomenon where the number of possible states increases exponentially with the number of variables.
+Considering this, the total number of states would be in most cases much larger than the discovered states bringing the ratio close to zero.
+
+To understand if AlgoFuzz is able to effectively discover new states, we analyzed the ratio of unique transitions to the number of calls made to the smart contract in section \ref{section:results-state-discovery}.
+Our data reveal that with the right configuration AlgoFuzz is able to discover new transitions very effectively.
+As transitions and states are directly related, we can infer that AlgoFuzz is also able to discover new states effectively.
+
+\begin{mybox}
+    \textbf{Answer to RQ.2:} The results show that AlgoFuzz with the State driven configuration is able to produce 0.9 unique transitions per call on average.
+    Although, there is no other tool to compare this result to, considering that the maximum ratio is 1.0, we can conclude that AlgoFuzz is able to discover new states effectively.
+\end{mybox}
 
 \section{Threats to Validity}
 In this section we will discuss the threats to the validity of our study.

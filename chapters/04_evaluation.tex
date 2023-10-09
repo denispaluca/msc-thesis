@@ -13,9 +13,13 @@ Instead of finding bugs, they decided to see if their fuzzer was able to reach c
 
 With these considerations in mind we came up with two different questions that we wanted to answer for our evaluation:
 \begin{enumerate}
-    \item[\textbf{RQ.1}] How does the code coverage evolve over time, especially during prolonged fuzzing sessions? Code coverage has been shown to correlate with the number of bugs found \cite{kochhar_code_2015}.
+    \item[\textbf{RQ.1}] How effective is AlgoFuzz in terms of covering new code?
+
+        Code coverage has been shown to correlate with the number of bugs found \cite{kochhar_code_2015}.
 
     \item[\textbf{RQ.2}] How effectively can AlgoFuzz discover the state space of the smart contract?
+
+        Since the property tests are defined on the state of the contract, the more state the fuzzer discovers the more likely it is to invalidate a property.
 \end{enumerate}
 
 \section{Setup}
@@ -79,7 +83,7 @@ Aside from that we calculated the values for the last call of each run to see wh
     \label{fig:percent_coverage}
 \end{figure}
 
-\subsection*{Code Coverage}
+\subsection*{Code Coverage} \label{section:results-code-coverage}
 To answer \textbf{RQ.1} we will look at percentage of code coverage over the number of calls to the target contract.
 Other metrics such as lines covered or the number of unique paths covered were also considered but were discarded since they did not provide any additional information.
 The percentage of code coverage is a normalized metric making it is easier to compare the results of different contracts.
@@ -125,7 +129,7 @@ The only exception being the Total State fuzzer on the AlgoTether, ExchangeToken
     \label{fig:unique_transitions}
 \end{figure}
 
-\subsection*{State Discovery}
+\subsection*{State Discovery} \label{section:results-state-discovery}
 For \textbf{RQ.2} we will look at the number of unique state transitions over the number of calls to the target contract.
 Although a new state transition does not necessarily mean that a new state was discovered, it is a good approximation (since the maximal number of transitions is equal to number of states squared).
 The best case scenario would be if the fuzzer discovers a new transition on every call.
