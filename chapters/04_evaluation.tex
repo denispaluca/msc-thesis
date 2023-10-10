@@ -95,17 +95,17 @@ We have also added a vertical line at the point where all the seed values have b
 All the different configurations are shown in the same graph to be able to compare them.
 We can observe that the Total Fuzzer, in both cases regardless of the driver, lags behind the Partial Fuzzer.
 
+\begin{table}[hbp]
+    \centering
+    \csvautotabular{data/covs-noseed-acc.csv}
+    \caption{Final code coverage for each contract subtracting seed coverage.}\label{table:covs-noseed-acc}
+\end{table}
+
 Another interesting observation is that the fuzzer behaves very differently for the two contracts in the early stages.
 For the AlgoTether contract, the fuzzer immediately covers new code on almost every call while consuming the seeds.
 On the other hand, for the ExchangeToken contract, most of the seed values do not cover new code.
 We also graphed the ranges and the medians of the coverage for each configuration separately, which can be seen in Figure \ref{fig:AlgoTether range} and Figure \ref{fig:ExchangeToken range} respectively.
 In these graphs can be seen that the coverage has no variance in the beginning for the Total fuzzer, while the Partial fuzzer has a lot of variance depending on the driver.
-
-\begin{table}[htbp]
-    \centering
-    \csvautotabular{data/covs-noseed-acc.csv}
-    \caption{Final code coverage for each contract subtracting seed coverage.}\label{table:covs-noseed-acc}
-\end{table}
 
 In Table \ref{table:covs-noseed-acc} we can see the final code coverage for each contract after we remove the coverage gained by the seed inputs.
 Aside from contracts 1, 4, and 12, in all other contracts the fuzzers have gained coverage beyond what was covered by the seeds.
@@ -114,7 +114,7 @@ The only exception being the Total State fuzzer on the AlgoTether, ExchangeToken
 
 
 
-\begin{figure}[htbp]
+\begin{figure}[!b]
     \centering
     \subfloat[AlgoTether][AlgoTether]{
         \includegraphics[width=0.48\textwidth]{charts/AlgoTether_ unique_transitions .pdf}
@@ -138,6 +138,9 @@ Here we confirm our previous observations that we made for the Total State fuzze
 These results also show that using the Total State fuzzer introduces an overhead since the number of calls is much lower even though the fuzzers run for the same amount of time.
 The other configurations of the Total fuzzer in this metric are heavily underperforming by comparison to the Total State fuzzer and the Partial fuzzer. They are barely reaching around 5000 or 2000 transitions, while the other fuzzers reach between 15000 and 30000 transitions. The Total fuzzer with the Coverage or Combined driver also introduces more variance in the number of transitions, as can be seen in Figure \ref{fig:atrangetrans} and Figure \ref{fig:etrangetrans}.
 
+
+
+
 To get a better understanding of the data we also calculated the ratio of transitions to calls for each configuration across all contracts.
 We calculated the ratio for each contract by dividing the average number of transitions by the average number of calls for each configuration on the last call.
 Best achievable ratio is 1.0 which would mean that the fuzzer discovered a new transition on every call.
@@ -146,7 +149,7 @@ The ratios are also shown for all contracts in Table \ref{table:trans-ratio}.
 In the box plot it is shown that the Total State fuzzer has the highest median ratio, around 0.9, making it near perfect in terms of discovering new transitions.
 The Partial fuzzers have a median of around 0.4 and the other Total fuzzers have a median of around 0.2.
 
-\begin{figure}[t]
+\begin{figure}[hb]
     \centering
     \includegraphics*[width=0.8\textwidth]{charts/trans-ratio.pdf}
     \caption{Box plots for the ratio of transitions to calls for each fuzzer across all contracts.}\label{fig:trans-ratio}
