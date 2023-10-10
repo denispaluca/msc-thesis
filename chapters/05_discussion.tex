@@ -7,9 +7,9 @@ In this chapter we will discuss the findings of our study and the threats to the
 \section{Findings and Interpretations}
 
 \subsection*{RQ.1 Code Coverage}
-The results in section \ref{section:results-code-coverage} show our approach was able to achieve a code coverage of xx\% on average.
+The results in section \ref{section:results-code-coverage} show our approach was able to achieve a code coverage of 65\% on average.
 The code coverage also when we exclude the coverage achieved by the seed values is substantial.
-AlgoFuzz was able to achieve a code coverage of xx\% on average without the seed values.
+AlgoFuzz was able to achieve a code coverage of 32\% on average without the seed values.
 Although 100\% code coverage was not achieved in any of the runs, we assume this is due to the fact that some lines of code are not reachable, for example lines that are executed during the deployment of the smart contract.
 
 Our data indicate the usual trend with regard to code coverage wherein the code coverage increases rapidly initially, but then it tends to plateau as the fuzzing session is extended.
@@ -19,9 +19,9 @@ As most of the code paths are explored, the probability of finding new code path
 This of course is dependent on the structure of the smart contract being tested.
 
 \begin{mybox}
-    \textbf{Answer to RQ.1:} The results from our study suggest that AlgoFuzz demonstrates is proficient in covering new code.
-    In multiple instances, AlgoFuzz was able to attain a substantial coverage rate.
-    Even when accounting for the coverage gained by the seed values, AlgoFuzz was able to achieve additional coverage.
+    \textbf{Answer to RQ.1:} The results of our study demonstrate that AlgoFuzz is proficient in covering new code.
+    In most instances, AlgoFuzz was able to attain the maximal coverage rate regardless of the configuration.
+    Even when accounting for the coverage gained by the seed values, AlgoFuzz was able to achieve additional coverage. The best configuration gained on average an additional 34\% coverage.
 \end{mybox}
 
 \subsection*{RQ.2 State Discovery}
@@ -58,7 +58,7 @@ For this reason, the results of the runs may have been affected by not starting 
 The external validity of our study is limited by the number of smart contracts that we analyzed and by the fact that we only analyzed smart contracts which were ported to Algorand by us.
 AlgoFuzz cannot be used to analyze smart contracts which do not adhere to the official \ac{ABI}.
 This is the case for the vast majority of the most popular smart contracts on Algorand \cite{noauthor_algorand_nodate-6}.
-Other limitations such as lack of dynamic storage support (box storage) and lack of support for \acp{ASA} may to some extent affect the external validity of our study.
+Other limitations such as lack of dynamic storage support (box storage) and lack of support for \acp{ASA} also affect the external validity of our study.
 
 The contracts we analyzed may also not be representative of the smart contracts that are currently deployed on Algorand.
 Contracts on Algorand may be more complex than the ones we analyzed.

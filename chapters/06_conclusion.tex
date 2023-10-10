@@ -2,6 +2,32 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Conclusion}\label{chapter:conclusion}
+In this thesis, we conceptualized, implemented and evaluated AlgoFuzz, a fuzzer for Algorand smart contracts.
+Smart contracts are one of the main building blocks of modern blockchains and are used to implement a wide range of \acp{dApp}.
+They automate the execution of agreements between different parties and therefore control a large amount of financial value.
+For this reason, they are a prime target for attackers and their security is paramount.
+
+Many software testing techniques have been proposed to detect vulnerabilities in smart contracts.
+One such technique is fuzzing, which has been shown to be effective in detecting vulnerabilities in traditional software.
+Tools that use fuzzing in regard to smart contracts have been proposed as well, and have shown great promise.
+However, most of these tools focus on the Ethereum blockchain, which is the most widely used blockchain for smart contracts.
+
+In recent years, novel blockchain platforms that support smart contracts and address the shortcomings of Ethereum have emerged.
+The Algorand blockchain is one such platform, with features such as immediate transaction finality, high block creation speed and low transaction fees.
+Despite these advantages, there is still a lack of development tools for the Algorand ecosystem, making it difficult for developers to write secure smart contracts.
+Although static analyzers and testing frameworks have been introduced, a dedicated fuzzing tool for Algorand smart contracts has yet to be developed.
+
+This thesis aims to address this gap by proposing AlgoFuzz.
+AlgoFuzz incorporates features like structured input generation, property-based testing, and multiple fuzzing strategies, enabling comprehensive testing of Algorand smart contracts.
+Through a series of empirical experiments, we evaluate the effectiveness of AlgoFuzz.
+Algorand smart contracts, derived from Ethereum smart contracts present in the Echidna benchmark suite, were used as primary testing grounds.
+Furthermore, two larger Algorand smart contracts were assessed.
+The results of the experiments show that on most configurations, AlgoFuzz is able to reach the highest achievable code coverage.
+Aside from some small contracts, AlgoFuzz was able to gain additional code coverage besides the coverage gained by the seed values.
+The results also show that AlgoFuzz is able to discover new states effectively.
+With the right configuration for this metric, namely the Total State configuration, AlgoFuzz was able to discover on average 0.9 unique transitions per call.
+
+
 
 \section*{Future Work}
 In this section we will discuss possible future work.
@@ -22,7 +48,7 @@ Potentially leading to different states of the contract and different code cover
 For such a feature, the user could for example specify the number of calls that should be executed before redeploying the contract.
 
 AlgoFuzz could also be extended to support shrinking of failing inputs.
-This could be done by using the different by going backwards through the state transitions, starting from the failing state.
+This could be done by going backwards through the state transitions, starting from the failing state.
 This would allow the user to get a minimal transaction sequence for a failing run.
 
 The fuzzer could also be enhanced to support static analysis methods which would allow the fuzzer to more efficiently explore different code paths.
@@ -39,8 +65,7 @@ Similarly, support for other reference type arguments could be added to the fuzz
 
 
 When compiled with the Beaker framework, contracts not only include the usual \ac{ABI} information but also provide hints about the different methods.
-These hints include what kind of transaction type each method supports.
-Such as a method that should be called when the user is opting in to an application.
+These hints include what kind of transaction type each method supports, for example a method that should be called when the user is opting in to an application.
 With this information, the fuzzer could then support a wider range of contracts.
 
 \subsection*{Evaluation}
