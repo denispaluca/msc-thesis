@@ -12,14 +12,14 @@ In the recent past, we have witnessed several high-profile attacks on smart cont
 One such attack was the Wormhole hack, which resulted in the loss of \$320 million worth of cryptocurrency \cite{faife_wormhole_2022}.
 
 As with regular software, different software testing techniques have been proposed and are being actively used to detect vulnerabilities in smart contracts.
-Traditionally software testing methodologies such as unit testing, have shown to be minimally effective in improving the security of smart contracts when used on their own \cite{noauthor_smart_nodate}.
+Traditional software testing methodologies such as unit testing, have shown to be minimally effective in improving the security of smart contracts when used on their own \cite{noauthor_smart_nodate}.
 Unit tests are only as good as the test cases written by the developer, and it is impossible to write test cases for a wide range of input scenarios.
 For this reason, fuzzing has been proposed as a complementary technique to unit testing.
 
 Fuzz testing or fuzzing is a software testing technique that involves providing invalid, unexpected, random or semi-random data as inputs to a program \cite{manes_art_2019}.
 The goal of fuzzing is to trigger unexpected behavior in the program, which may indicate the presence of a vulnerability.
 During fuzzing the program is monitored for problems such as crashes, assertion failures, and memory leaks.
-Most fuzzer require little to no knowledge of the program under test, making them easy to use.
+Most fuzzers require little to no knowledge of the program under test, making them easy to use.
 Also, considering the automated nature of fuzzing, it is simple to integrate it into the software development lifecycle.
 It can be set up to continuously test new code changes without manual intervention, making it a good addition to the \ac{CI} and \ac{CD} pipelines \cite{klooster_effectiveness_2022}.
 Fuzzing has achieved great success in detecting security flaws, and because of this, it has become the most widely used technique to discover vulnerabilities \cite{li_fuzzing_2018, zhu_fuzzing_2022}.
@@ -65,7 +65,7 @@ The remainder of this thesis is structured as follows.
 In Chapter \ref{chapter:background}, we provide the necessary background information on blockchain, smart contracts, smart contract security, Algorand, fuzzing and previous related work.
 Moving to Chapter \ref{chapter:methodology}, we outline the methodology behind AlgoFuzz's development, discussing our design choices, the features and constraints that influenced these decisions, and conclude with a relevant case study.
 Chapter \ref{chapter:evaluation} lays out the research questions, sets up the experimental environment, and presents the results of the experiments.
-These results are then discussed in Chapter \ref{chapter:discussion} in the context of the research questions. Furthermore, in the same chapter, we discuss the limitations of our work by provided possible threats to validity.
+These results are then discussed in Chapter \ref{chapter:discussion} in the context of the research questions. Furthermore, in the same chapter, we discuss the limitations of our work by providing possible threats to validity.
 Finally, in Chapter \ref{chapter:conclusion}, we conclude the thesis by summarizing our findings and discussing possible future work.
 
 

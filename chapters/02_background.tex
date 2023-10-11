@@ -223,7 +223,7 @@ The vast majority of them target Ethereum smart contracts.
 One of the most prominent fuzzers for Ethereum smart contracts is Echidna.
 Developed by the company Trail of Bits, Echidna is a property-based coverage-guided fuzzer that tests the contract's invariants using random transactions.
 Echidna has been employed in numerous security audits and has proven to be effective in uncovering bugs in Ethereum contracts \cite{grieco_echidna_2020,noauthor_echidna_nodate}.
-It makes use of an EVM implementation written in Haskell called \textit{hevm} \cite{noauthor_haskell_nodate}, which allows it to run the contracts without the need of a private Ethereum network.
+It makes use of an \acs{EVM} implementation written in Haskell called \textit{hevm} \cite{noauthor_haskell_nodate}, which allows it to run the contracts without the need of a private Ethereum network.
 \emph{ContractFuzzer} was introduced in 2018, it stands as one of the earliest examples of fuzzing applied to smart contracts \cite{jiang_contractfuzzer_2018}.
 The fuzzer uses static analysis in combination with fuzzing to generate inputs that are more likely to trigger bugs.
 Different from Echidna, it uses a private Ethereum network to run the contracts.
