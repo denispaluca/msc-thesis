@@ -15,7 +15,7 @@ However, generating inputs in a completely random fashion is not very effective 
 The vast majority of inputs will be rejected by the application.
 For this reason, our fuzzers considers only contracts that adhere to the official Algorand \ac{ABI} conventions (mentioned in \ref{section:algorand-smartcontracts}).
 Our input generators will be aware of the input structure of the contract.
-This provided us with the different functions that are available in the smart contract and the types of the arguments that they take.
+This provides us with the different functions that are available in the smart contract and the types of the arguments that they take.
 From this information, comes the first part of the fuzzed input, the second part is the account that is used to call the smart contract.
 Our fuzzing input would then be the following tuple: \texttt{(function, arguments, account)}.
 To generate the inputs for our fuzzer we will be using a mutation-based approach.
@@ -228,7 +228,7 @@ In Figure \ref{fig:architecture-fuzzers} we can see the updated architecture wit
 These \textit{method fuzzers} each have their own population of interesting inputs, power schedules, seeds, and other fuzzing parameters.
 The population of inputs in this case being a list of tuples of the form \texttt{(arguments, account)}.
 On each iteration the partial fuzzer randomly chooses a method and runs the corresponding method fuzzer.
-All methods have the same probability of being chosen regardless of the amount interesting inputs that are found for them.
+All methods have the same probability of being chosen regardless of the amount of interesting inputs that are found for them.
 Although this approach seems naive, it has been shown to be effective in terms of code coverage from our experiments.
 The main advantage of this approach is that it is very easy to implement and it generates new inputs faster.
 The performance gain comes from the fact that the schedulers of the different method fuzzers have fewer inputs to choose from.
