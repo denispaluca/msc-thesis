@@ -1,22 +1,12 @@
-# LaTeX template for TUM theses
+# Master's Thesis: Fuzzing Algorand Smart Contracts
 
-This is a LaTeX template created according to the guidelines for TUM informatics theses in WS 2022. **Always check the [current formatting guidelines][thesis-guidelines] before you hand in.** See [`build/main.pdf`][sample-pdf] for an example PDF created with this template.
+This repository contains all the LaTeX files used to write the master's thesis.
 
-Note: Because of copyright considerations, TUM logos are not included in this template. Unfortunately, the logos are also not available on the MyTUM website anymore.
-Your supervisor should be able to hand them to you.
+## Background
+Smart contracts are crucial for many blockchain networks, especially for sensitive financial transactions. Traditional testing methods, such as unit testing, are not fully effective for ensuring smart contract security because they do not consider the unique interactions between the contracts and the blockchain. A software testing technique called fuzzing, where random inputs are used to discover bugs, is emerging as a potent method for smart contract security. Tools like [Echidna](https://github.com/crytic/echidna) have applied fuzzing to Ethereum contracts with success. However, with the rise of newer blockchain platforms like [Algorand](https://algorand.com/), there's a need for dedicated security tooling.
 
-Comments & contributions are welcome!
-
-## Quickstart
-
- * [Download][template-download] and extract the template, or upload it to an online editor such as [Overleaf][overleaf] or [TUM ShareLaTeX][tum-sharelatex]. If you prefer to use Git, just clone/fork the repository.
-If your editor supports compiling LaTeX, set it up to use `pdflatex` and `biber`. Set the master document to `main.tex`. Alternatively, you can use the provided Makefile to generate a PDF in the `build` directory (requires `latexmk`).
- * To use Visual Studio Code install the [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) extension. Then as soon as you click on "Save" it automatically compiles your thesis for you without having to configure anything.
- * Look for `TODO` comments in the provided files. Start at `main.tex`.
-
-If you are new to LaTeX, the [Overleaf Documentation][overleaf-learn] or the [LaTeX Wikibook][latex-wikibook] might help.
-
-If you still have problems with the template, feel free to [create an issue][issue]. For general LaTeX questions, use [TeX StackExchange][tex-se].
+## Contribution 
+This paper introduces [**AlgoFuzz**](https://github.com/denispaluca/algofuzz), a fuzzing tool specifically designed for Algorand smart contracts. The tool uses greybox fuzzing to enhance code coverage and understand the possible states a contract can reach. The effectiveness of AlgoFuzz was tested using contracts from Echidna benchmarks and two larger Algorand contracts. In tests, AlgoFuzz achieved a code coverage of 64.04% on the Echidna benchmarks and 72.56% on the larger contracts, showcasing its potential to improve smart contract security on the Algorand platform.
 
 ## License
 
